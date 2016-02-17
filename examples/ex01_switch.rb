@@ -8,15 +8,18 @@ parser = Miniparse::Parser.new
 
 #define interface
 parser.add "--debug", false, "activate debug"
-parser.add "--verbose LEVEL"
+parser.add "--verbose"
 
-                     parser.options.each { |o|  p o.name } 
+                     # parser.options.each { |o|  p o.name } 
 
 #parse command line
-parser.parse ARGV
+args = parser.parse ARGV
 
 #see results
-p parser.options_parsed
+puts "Options:"
+p parser.options_status
+puts "Args:"
+p args
 
                     #  puts parser.msg_help
 puts "Done."
