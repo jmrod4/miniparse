@@ -35,16 +35,18 @@ module Miniparse
    
     ############ PARSING
     
-    # only options allowed (everything else)
+    # allowed:
     # for switches:
     #   --option
     #   --no-option
     # for flags
     #   --option <value>
     #   --option=<value>    
-    # note that <value> can be anything, even spaces if invoked like: "--option=    "
+
+    # FEATURE: <value> can be anything, even spaces 
+    #  as for example if invoked in the command line as: "--option=    "
     
-    # raise exceptions
+    # raise exceptions:
     # for switches and flags
     #   --option= 
     # for flags
@@ -53,21 +55,25 @@ module Miniparse
     #   --option=<value>
     #   --option <value>
     
-    # TODO: consider using auto short options
+    # TODO FEATURE: consider using auto short options
+    # TODO FEATURE: consider be able to specify short options
+    # TODO FEATURE: consider doing unambiguous matches for shortened options
     
-    # returns option value or nil if it isn't this option
     def matches?(s)
+      # returns option value or nil if s doesn't match this option
+      
       if s =~ /^--(no-)?#{@name}$/
-        raise "missing value for option '#{@name}'"  unless @is_switch
+        raise "missing value for option '#{@name}'"    unless @is_switch
         @value = $1.nil?
       elsif s =~ /^--#{@name}[ |=](.*)$/
-        raise "value specified for switch option '#{name}'"  if @is_switch
+        raise "value specified for switch option '#{name}'"    if @is_switch
         raise "missing value for flag option '#{name}'"    if $1 == ""
         @value = $1
       else
         # not this option
-        return nil
+        nil
       end
+
     end
     
   end

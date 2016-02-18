@@ -50,10 +50,10 @@ module Miniparse
         return value  unless value.nil?
       end
       # raise if possible bad option!!
-      puts "<#{arg}>"
       if arg =~ /^(--.*)\s*\Z/
         raise "unrecognized option '#{$1}'"
       end
+      #puts "unparsed args: >#{arg}<"
       # returns nil if none option matched
       nil
     end  

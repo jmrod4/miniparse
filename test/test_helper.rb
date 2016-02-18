@@ -1,4 +1,10 @@
-$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+require 'minitest/spec'
+require 'minitest/pride'
+require 'minitest/autorun'
+
 require 'miniparse'
 
-require 'minitest/autorun'
+
+def echo(msg)
+  puts "---->#{msg.inspect}<-----"
+end
