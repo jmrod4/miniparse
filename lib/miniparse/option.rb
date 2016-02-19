@@ -1,37 +1,73 @@
 module Miniparse
 
-  def self.get_prefix(s)
-    s =~ /^(-?-?\w[\w-]*)/
-    $1
-  end
-  
-  def self.get_name(s)
-    s =~ /^-?-?(\w[\w-]*)/
-    $1
-  end
+  class Interface
 
+    def self.get_prefix(s)
+      s =~ /^(-?-?\w[\w-]*)/
+      $1
+    end
   
-  class Option
- 
+    def self.get_name(s)
+      s =~ /^-?-?(\w[\w-]*)/
+      $1
+    end
+
+    attr_reader :name
+
+    attr_reader :_short_help, :_desc, :_block
+
+    def initialize(short_help, description, &block)
+      @name = self.class.get_name(short_help).to_sym
+      @_short_help = short_help
+      @_desc = description
+      @_block = block
+    end
+
+    def prefix
+      n = self.class.get_prefix _short_help 
+      #puts "sh: #{short_help} prefix: #{n}"
+    end
+  
+    def run(*args)
+      _block.call(*args)    if _block 
+    end
+  end
+  
+
+  class Option < Interface
+
+    # external -> contract
     attr_reader :value
+
+    # internal -> can refactor any time
+    attr_reader :_default, :_required
     
     def initialize(short_help, description=nil, default=nil, required=false, &block)
-      @short_help = short_help
-      @desc = description
-      @value = @default = default
-      @required = required
+      super(short_help, description, &block)
+      @value = @_default = default
+      @_required = required
     end
-    
-    def name
-      Miniparse.get_name @short_help
-      #puts "sh: #{@short_help} name: #{n}"
+       
+    def set_value(arg)
+      arg_name, val = self.class.format_to_name_value(arg)
+      raise "can't get value from invalid format option '#{arg}'"    if val.nil?
+      raise "#{name} option expected '#{arg}'"    if name.to_s != arg_name 
+      @value = val
     end
-    
-    def prefix
-      n = Miniparse.get_prefix @short_help 
-      #puts "sh: #{@short_help} prefix: #{n}"
+
+    def run
+      super(value)
     end
   
+    #returns true if arg corresponds to this option
+    def check(arg)
+      prefix == self.class.get_prefix(arg)
+    end
+
+    def parse(arg)
+      return nil    unless check(arg) 
+      set_value(arg)
+    end
   end
   
   
@@ -44,20 +80,21 @@ module Miniparse
     end
 
     # return true if format correct
-    def self.format?(s)
+    def self.valid_format(s)
       name, val = format_to_name_value(s)
       !name.nil?
     end
 
-    
-    def initialize(*args, &block)
-      super 
+    def check(arg)
+      return true    if super(arg)
+      return false   unless arg =~ /^--no-(.*)/
+      #remove negative prefix and try to check again
+      super("--#{$1}")
     end
-    
   end
   
-  
-  class OptionTag < Option
+
+  class OptionFlag < Option
   
     # return an array with name and value  
     def self.format_to_name_value(s)
@@ -66,14 +103,9 @@ module Miniparse
     end
 
     # return true if format correct
-    def self.format?(s)
+    def self.valid_format(s)
       name, val = format_to_name_value(s)
       !name.nil?
-    end
-  
-  
-    def initialize(*args, &block)
-      super
     end
   
   end
