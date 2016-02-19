@@ -7,7 +7,7 @@ require "miniparse"
 parser = Miniparse::Parser.new
 
 #define interface
-parser.add "--debug", false, "activate debug"
+parser.add "--debug", "activate debug", false
 parser.add "--verbose"
 
                      # parser.options.each { |o|  p o.name } 
@@ -17,7 +17,7 @@ args = parser.parse ARGV
 
 #see results
 puts "Options:"
-p parser.options_status
+p parser.options
 puts "Args:"
 p args
 

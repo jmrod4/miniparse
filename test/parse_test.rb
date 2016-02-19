@@ -5,7 +5,7 @@ class TestParseGeneric < Minitest::Test
 
   def setup
     @parser = Miniparse::Parser.new
-    @parser.add "--debug", nil, "activate debug"
+    @parser.add "--debug", "activate debug"
     @parser.add "--verbose LEVEL"
   end
 
@@ -45,7 +45,7 @@ class TestParseSwitch < Minitest::Test
 
   def setup
     @parser = Miniparse::Parser.new
-    @parser.add "--debug", nil, "activate debug"
+    @parser.add "--debug", "activate debug"
   end
 
   def test_bad_switch
@@ -69,22 +69,22 @@ class TestParseSwitch < Minitest::Test
 
   def test_default_value_nil
     parser = Miniparse::Parser.new
-    parser.add "--debug", nil, "activate debug"
+    parser.add "--debug", "activate debug"
     arg = parser.parse ["a"]
     
-    assert_nil parser.options_status[:debug] 
+    assert_nil parser.options[:debug] 
     
-    assert_empty parser.options_status,
+    assert_empty parser.options,
       "FEATURE don't add an option if default value is nil"
   end
 
 
   def test_good_switch
     arg = @parser.parse ["--debug"]
-    assert(@parser.options_status[:debug] == true)
+    assert(@parser.options[:debug] == true)
 
     arg = @parser.parse ["--no-debug"]
-    assert(@parser.options_status[:debug] == false)
+    assert(@parser.options[:debug] == false)
 
     assert_empty @parser.parse ["--debug"]
     assert_empty @parser.parse ["--no-debug"]
@@ -128,9 +128,9 @@ class TestParseFlag < Minitest::Test
     parser.add "--verbose LEVEL"
     parser.parse ["a"]
     
-    assert_nil parser.options_status[:verbose] 
+    assert_nil parser.options[:verbose] 
     
-    assert_empty parser.options_status,
+    assert_empty parser.options,
       "FEATURE don't add an option if default value is nil"
   end
 
@@ -140,9 +140,9 @@ class TestParseFlag < Minitest::Test
     assert_empty @parser.parse ["--verbose 1"]
 
     @parser.parse ["--verbose 1"]
-    assert_equal "1", @parser.options_status[:verbose]
+    assert_equal "1", @parser.options[:verbose]
 
     @parser.parse ["--verbose=1"]
-    assert_equal "1", @parser.options_status[:verbose]
+    assert_equal "1", @parser.options[:verbose]
   end
 end

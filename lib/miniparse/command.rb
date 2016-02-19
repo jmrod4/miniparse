@@ -1,7 +1,11 @@
 module Miniparse
 
-  class Command
+  def self.format?(s)
+    nil
+  end
 
+  class Command
+ 
 
   end
 
