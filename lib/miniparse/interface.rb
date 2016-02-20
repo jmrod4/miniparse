@@ -31,9 +31,9 @@ module Miniparse
       #puts "sh: #{short_help} prefix: #{n}"
     end
 
-    # runs the associated block
+    # runs the associated block with specified arguments
     #
-    # @param arguments passed to the block
+    # @param args is arguments passed to the block
     def run(*args)
       _block.call(*args)    if _block 
     end
@@ -67,7 +67,7 @@ module Miniparse
       super(value)
     end
     
-    # @param arg, like an element of ARGV
+    # @param arg is like an element of ARGV
     # @return true if arg corresponds to this option
     def check(arg)
       prefix == self.class.get_prefix(arg)
@@ -96,7 +96,7 @@ module Miniparse
     #   --option=<value>
     #   --option <value>
     #
-    # @param arg, like an element of ARGV
+    # @param arg is like an element of ARGV
     # @return nil if arg doesn't correspond to this option 
     # @return set value
     def parse(arg)
@@ -106,7 +106,7 @@ module Miniparse
 
     # extracts and sets the value from arg
     #
-    # @param arg, like an element of ARGV
+    # @param arg is like an element of ARGV
     # @return set value    
     def set_value(arg)
       arg_name, val = self.class.format_to_name_value(arg)
@@ -130,14 +130,14 @@ module Miniparse
 
   class OptionSwitch < Option
 
-    # @param s, a string (like an element of ARGV)
+    # @param s is a string (like an element of ARGV)
     # @return an array with extracted option name and value  
     def self.format_to_name_value(s)
       s =~ /^--(no-)?(\w[\w-]*)$/
       [$2, $1.nil?]
     end
 
-    # @param s, a string (like an element of ARGV)
+    # @param s is a string (like an element of ARGV)
     # @return true if format correct for a switch
     def self.valid_format(s)
       name, val = format_to_name_value(s)
@@ -160,14 +160,14 @@ end # module
 module Miniparse
   class OptionFlag < Option
     
-    # @param s, a string (like an element of ARGV)
-    # @return an array with extracted option name and value  
+    # @param s is a string (like an element of ARGV)
+    # @return array with extracted option name and value  
     def self.format_to_name_value(s)
       s =~ /^--(\w[\w-]*)[ |=](.+)$/
       [$1, $2]
     end
 
-    # @param s, a string (like an element of ARGV)
+    # @param s is a string (like an element of ARGV)
     # @return true if format correct for a flag
     def self.valid_format(s)
       name, val = format_to_name_value(s)

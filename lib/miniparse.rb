@@ -6,9 +6,7 @@ require "miniparse/version"
 
 require "miniparse/util"
 
-require "miniparse/option"
-
-require "miniparse/command"
+require "miniparse/interface"
 
 require "miniparse/parser"
 
