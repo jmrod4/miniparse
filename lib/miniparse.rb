@@ -7,7 +7,7 @@ require "miniparse/version"
 require "miniparse/util"
 
 require "miniparse/interface"
-
+require "miniparse/option_broker"
 require "miniparse/parser"
 
 

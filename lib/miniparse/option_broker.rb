@@ -1,0 +1,74 @@
+module Miniparse 
+
+
+class OptionBroker
+
+  attr_reader :parsed_options
+
+  attr_reader :_added_options
+
+  def initialize
+    @parsed_options = {}
+    @_added_options = []
+  end
+
+  def _new_option(spec, *args, &block)
+    if SwitchOption.valid_spec(spec)
+      SwitchOption.new(spec, *args, &block)
+    elsif FlagOption.valid_spec(spec)
+      FlagOption.new(spec, *args, &block)
+    else
+      raise "unknown or invalid option specification '#{spec}'"
+    end
+  end
+
+  def add_option(*args, &block)
+    opt = _new_option(*args, &block)
+    @_added_options << opt
+  end
+
+  def _check_arg(arg)
+    _added_options.each do |opt|
+      return opt    if opt.check(arg)
+    end
+    nil
+  end
+
+  def _update_parsed_options
+    _added_options.each do |opt|
+      if opt.value != nil
+        @parsed_options[opt.name] = opt.value
+      end
+    end
+  end
+
+  # @param argv is like ARGV but just for this broker
+  # @return unprocessed arguments
+  def parse_argv(argv)
+    av = argv.dup
+    rest_argv = []
+    while av.size > 0
+      arg = av.shift
+      opt = _check_arg(arg)
+      if opt
+        val = opt.parse_value(arg)
+	if val.nil? && av.size > 0 && av[0][0] != '-'
+	  new_arg = arg + "=" + av.shift
+	  val = opt.parse_value(new_arg)
+        end
+        raise "invalid invocation format '#{arg}'"    if val.nil?
+      else
+        if (Miniparse::Error_on_unrecognized_option) && (arg[0] == '-')
+          raise "unrecognized option '#{arg}'"
+        end
+        rest_argv << arg
+      end
+    end
+    _update_parsed_options
+    rest_argv
+  end
+
+end
+
+
+end
