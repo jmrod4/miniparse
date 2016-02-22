@@ -178,3 +178,33 @@ module Miniparse
 
 end #module
 
+
+module Miniparse
+  
+  class Command < Interface
+    
+    # @param s is a string (like an element of ARGV)
+    # @return the extracted command name  
+    def self.format_to_name(s)
+      s =~ /^(\w[\w-]*)$/
+      $1
+    end
+
+    # @param s is a string (like an element of ARGV)
+    # @return trueish if format correct for a switch
+    def self.valid_format(s)
+      name = format_to_name(s)
+    end
+    
+    attr_reader :broker
+  
+    def initialize(short_help, *args, &block)
+      valid = self.class.valid_format(short_help)
+      raise "invalid format for command '#{short_help}'"    unless valid
+      @broker = new.OptionBroker
+      super(short_help, *args, &block)
+    end
+  
+  end
+
+end #module

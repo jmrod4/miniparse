@@ -7,8 +7,8 @@ require "miniparse"
 parser = Miniparse::Parser.new
 
 #define interface
-parser.add "--debug", "activate debug", false
 parser.add "--verbose"
+parser.add "--debug", "activate debug", default:false
 
                      # parser.options.each { |o|  p o.name } 
 
