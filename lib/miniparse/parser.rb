@@ -25,7 +25,7 @@ class Parser
     @_command_brokers = {}
     @current_command = nil
     
-    add_option("--help", nil) do
+    add_option("--help", nil, negate:false) do
       puts _help_usage
       puts
       puts _help_global_options
@@ -41,12 +41,13 @@ class Parser
     end
   end
 
-  def add_option(short_help, description, *args, &block)
-    _current_broker.add_option(short_help, description, *args, &block)
+  def add_option(spec, desc, opts={}, &block)
+    _current_broker.add_option(spec, desc, opts, &block)
   end
 
-  def add_command(name, *args, &block)
-    cmd = Command.new(name, *args, &block)
+  def add_command(name, opts={}, &block)
+    args = opts.merge(spec:name)
+    cmd = Command.new(args, &block)
     @_commands[cmd.name] = cmd
     @_command_brokers[cmd.name] = OptionBroker.new
     @current_command = cmd.name

@@ -24,11 +24,19 @@ class InterfaceElement
 
   attr_reader :_block
 
-  def initialize(spec, &block)
+  def initialize(args, &block)
+    p args
+    spec = args[:spec] 
+
     @name = self.class.spec_to_name(spec)
     raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
     @_block = block
+    post_initialize(args)
   end
+
+  def post_initialize(args)
+    nil
+  end 
 
   # runs the associated block with specified arguments
   #
@@ -59,18 +67,18 @@ end
 
 class Option < InterfaceElement
   
-  attr_reader :_short_help, :_desc
+  attr_reader :_spec, :_desc
 
   attr_reader :value
 
-  def initialize(spec, description, default:nil, &block)
-    @_short_help = spec
-    @_desc = description
-    @value = @default = default
-    super(spec, &block)
+  def post_initialize(args)
+    super(args)
+    @_spec = args[:spec]
+    @_desc = args[:desc] 
+    @value = args[:default]
   end
 
-  def arg_to_value(spec)
+  def arg_to_value(arg)
     raise NotImplementedError, 
         "#{self.class} cannot respond to '#{__method__}'"
   end
@@ -91,7 +99,7 @@ class Option < InterfaceElement
   end
 
   def help_desc
-    "  #{_short_help}  #{_desc}"    if _desc
+    "  #{_spec}  #{_desc}"    if _desc
   end
 
 end
@@ -104,10 +112,19 @@ class SwitchOption < Option
     spec_pattern_to_name(spec, /^--(\w[\w-]+)$/)
   end
 
+  attr_reader :_negate
+
+  def post_initialize(args)
+    super(args)
+    @_negate = args[:negate]
+    @_negate = true    if _negate.nil?
+  end
+
+
   def arg_to_value(arg)
     if arg == "--#{name}"
       true
-    elsif arg == "--no-#{name}"
+    elsif _negate && arg == "--no-#{name}"
       false
     else
       nil
@@ -115,11 +132,14 @@ class SwitchOption < Option
   end
 
   def help_usage
-    "[--[no-]#{name}]"
+    if _negate
+      "[--[no-]#{name}]"
+    else
+      "[--#{name}]"
+    end
   end
 
 end
-
 
 
 class FlagOption < Option
@@ -129,7 +149,7 @@ class FlagOption < Option
   end
 
   # @param arg is like an ARGV element
-  # @return true if arg specifies this object
+  # @return true if arg specifies this option
   def check(arg)
      super(arg) || (arg =~ /^--#{name}$/)
   end
@@ -143,7 +163,7 @@ class FlagOption < Option
   end
 
   def help_usage
-    "[#{_short_help}]"
+    "[#{_spec}]"
   end
 
 end

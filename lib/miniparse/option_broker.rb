@@ -61,11 +61,12 @@ class OptionBroker
     helps.compact.join("\n")
   end
 
-  def _new_option(spec, *args, &block)
+  def _new_option(spec, desc, opts, &block)
+    args = opts.merge(spec:spec, desc:desc)
     if SwitchOption.valid_spec(spec)
-      SwitchOption.new(spec, *args, &block)
+      SwitchOption.new(args, &block)
     elsif FlagOption.valid_spec(spec)
-      FlagOption.new(spec, *args, &block)
+      FlagOption.new(args, &block)
     else
       raise SyntaxError, 
           "unknown or invalid option specification '#{spec}'"
