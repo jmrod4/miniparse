@@ -52,16 +52,20 @@ class Command < InterfaceElement
   def check(arg)
     arg == name.to_s
   end
+
 end
 
 
 
 class Option < InterfaceElement
   
-  attr_reader :desc, :value
+  attr_reader :_short_help, :_desc
+
+  attr_reader :value
 
   def initialize(spec, description, default:nil, &block)
-    @desc = description
+    @_short_help = spec
+    @_desc = description
     @value = @default = default
     super(spec, &block)
   end
@@ -86,6 +90,10 @@ class Option < InterfaceElement
     arg_to_value(arg) != nil
   end
 
+  def help_desc
+    "  #{_short_help}  #{_desc}"    if _desc
+  end
+
 end
 
 
@@ -104,6 +112,10 @@ class SwitchOption < Option
     else
       nil
     end
+  end
+
+  def help_usage
+    "[--[no-]#{name}]"
   end
 
 end
@@ -129,6 +141,11 @@ class FlagOption < Option
       nil
     end
   end
+
+  def help_usage
+    "[#{_short_help}]"
+  end
+
 end
 
 

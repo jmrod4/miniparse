@@ -46,7 +46,21 @@ class OptionBroker
     _update_parsed_options
     rest_argv
   end
-  
+ 
+  def help_usage
+    helps = @_added_options.collect do |opt|
+      opt.help_usage 
+    end
+    helps.compact.join(" ")
+  end
+
+  def help_desc
+    helps = @_added_options.collect do |opt|
+      opt.help_desc 
+    end
+    helps.compact.join("\n")
+  end
+
   def _new_option(spec, *args, &block)
     if SwitchOption.valid_spec(spec)
       SwitchOption.new(spec, *args, &block)

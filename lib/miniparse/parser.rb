@@ -24,6 +24,13 @@ class Parser
     @_commands = {}
     @_command_brokers = {}
     @current_command = nil
+    
+    add_option("--help", nil) do
+      puts _help_usage
+      puts
+      puts _help_global_options
+      exit ERR_HELP_REQ
+    end
   end
 
   def _current_broker
@@ -57,19 +64,6 @@ class Parser
     nil
   end
 
-  # @param argv is like ARGV
-  # @return an array of argv parts: [global_argv, command_arg, command_argv] 
-  def _split_argv(argv)
-    index = _index_command(argv)
-    if index
-      global_argv = (index == 0)? [] : argv[0..index-1]
-      command_argv = argv[index+1..-1]
-      [global_argv, argv[index], command_argv]
-    else  
-      [argv, nil, []]
-    end
-  end
-
   # @param argv is like ARGV but just for this parser
   # @return unprocessed arguments
   def parse(argv)
@@ -91,6 +85,28 @@ class Parser
   # @return  parsed (i.e. specified) command options
   def command_options
     _command_brokers[command_parsed].parsed_options    if command_parsed
+  end
+
+  # @param argv is like ARGV
+  # @return an array of argv parts: [global_argv, command_arg, command_argv] 
+  def _split_argv(argv)
+    index = _index_command(argv)
+    if index
+      global_argv = (index == 0)? [] : argv[0..index-1]
+      command_argv = argv[index+1..-1]
+      [global_argv, argv[index], command_argv]
+    else  
+      [argv, nil, []]
+    end
+  end
+
+  def _help_usage(detailed:true)
+    global = (detailed)? @_global_broker.help_usage : "[global_options]"
+    "usage: #{$PROGRAM_NAME} #{global} [<command> [command_options]]"
+  end
+
+  def _help_global_options
+    @_global_broker.help_desc
   end
 
 end
