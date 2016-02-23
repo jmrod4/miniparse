@@ -11,6 +11,11 @@ class InterfaceElement
     end
   end
 
+  def self.spec_to_name(spec)
+    raise NotImplementedError, 
+        "#{self.class} cannot respond to '#{__method__}'"
+  end
+
   def self.valid_spec(spec)
     spec_to_name(spec) != nil
   end
@@ -21,7 +26,7 @@ class InterfaceElement
 
   def initialize(spec, &block)
     @name = self.class.spec_to_name(spec)
-    raise "invalid specification '#{spec}'"    if @name.nil?
+    raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
     @_block = block
   end
 
@@ -59,6 +64,11 @@ class Option < InterfaceElement
     @desc = description
     @value = @default = default
     super(spec, &block)
+  end
+
+  def arg_to_value(spec)
+    raise NotImplementedError, 
+        "#{self.class} cannot respond to '#{__method__}'"
   end
 
   def parse_value(arg)

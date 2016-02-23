@@ -12,34 +12,9 @@ class OptionBroker
     @_added_options = []
   end
 
-  def _new_option(spec, *args, &block)
-    if SwitchOption.valid_spec(spec)
-      SwitchOption.new(spec, *args, &block)
-    elsif FlagOption.valid_spec(spec)
-      FlagOption.new(spec, *args, &block)
-    else
-      raise "unknown or invalid option specification '#{spec}'"
-    end
-  end
-
   def add_option(*args, &block)
     opt = _new_option(*args, &block)
     @_added_options << opt
-  end
-
-  def _check_arg(arg)
-    _added_options.each do |opt|
-      return opt    if opt.check(arg)
-    end
-    nil
-  end
-
-  def _update_parsed_options
-    _added_options.each do |opt|
-      if opt.value != nil
-        @parsed_options[opt.name] = opt.value
-      end
-    end
   end
 
   # @param argv is like ARGV but just for this broker
@@ -56,16 +31,47 @@ class OptionBroker
 	  new_arg = arg + "=" + av.shift
 	  val = opt.parse_value(new_arg)
         end
-        raise "invalid invocation format '#{arg}'"    if val.nil?
+	if val.nil?
+          raise ArgumentError,
+	      "#{opt.class} invalid invocation format '#{arg}'"
+	end
       else
         if (Miniparse::Error_on_unrecognized_option) && (arg[0] == '-')
-          raise "unrecognized option '#{arg}'"
+          raise ArgumentError, 
+	      "unrecognized option '#{arg}'"
         end
         rest_argv << arg
       end
     end
     _update_parsed_options
     rest_argv
+  end
+  
+  def _new_option(spec, *args, &block)
+    if SwitchOption.valid_spec(spec)
+      SwitchOption.new(spec, *args, &block)
+    elsif FlagOption.valid_spec(spec)
+      FlagOption.new(spec, *args, &block)
+    else
+      raise SyntaxError, 
+          "unknown or invalid option specification '#{spec}'"
+    end
+  end
+
+  def _check_arg(arg)
+    _added_options.each do |opt|
+      return opt    if opt.check(arg)
+    end
+    nil
+  end
+
+  def _update_parsed_options
+    @parsed_options = {}
+    _added_options.each do |opt|
+      if opt.value != nil
+        @parsed_options[opt.name] = opt.value
+      end
+    end
   end
 
 end
