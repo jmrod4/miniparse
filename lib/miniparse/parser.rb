@@ -4,10 +4,19 @@ module Miniparse
 # error exit codes
 ERR_HELP_REQ = 1
   
-# behaviour controlers
-# TODO FEATURE implement controlers as options in Parser.new()
-# defaults: { error_unrecognized:true, autoshort:false}
+
 # TODO FEATURE consider using auto short options
+
+
+# TODO FEATURE implement controlers as options in Parser.new()
+=begin
+default_controls = { 
+  error_unrecognized:true, 
+  autoshort:false, 
+  autonegatable:true}
+=end
+
+# behaviour controlers
 Error_on_unrecognized_option = true
 
 
@@ -29,9 +38,7 @@ class Parser
     @current_command = nil
     
     add_option("--help", nil, negatable:false) do
-      puts _help_usage
-      puts
-      puts _help_global_options
+      puts help_msg
       exit ERR_HELP_REQ
     end
   end
@@ -45,14 +52,14 @@ class Parser
   end
 
   # FIXME document arguments
-  def add_option(spec, desc=nil, opts={}, &block)
+  def add_option(spec, desc, opts={}, &block)
     _current_broker.add_option(spec, desc, opts, &block)
   end
 
   # FIXME document arguments
-  def add_command(name, opts={}, &block)
+  def add_command(name, desc, opts={}, &block)
     # TODO consider check and raise for duplicate commands
-    args = opts.merge(spec:name)
+    args = opts.merge(spec:name, desc:desc)
     cmd = Command.new(args, &block)
     @_commands[cmd.name] = cmd
     @_command_brokers[cmd.name] = OptionBroker.new
@@ -80,6 +87,10 @@ class Parser
   # @return  parsed (i.e. specified) command options
   def command_options
     _command_brokers[command_parsed].parsed_options    if command_parsed
+  end
+  
+  def help_msg
+    _help_usage + "\n\n" + _help_global_options
   end
 
   # @param argv is like ARGV

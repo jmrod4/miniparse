@@ -22,11 +22,16 @@ class InterfaceElement
 
   attr_reader :name
 
-  attr_reader :_block
+  attr_reader :_block, :_desc
 
+  # uses args:
+  #   :spec
+  #   :desc
   def initialize(args, &block)
-    p args
+    Miniparse::debug args.inspect      if args[:debug]
+     
     spec = args.fetch(:spec) 
+    @_desc = args[:desc] 
 
     @name = self.class.spec_to_name(spec)
     raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
@@ -43,6 +48,10 @@ class InterfaceElement
   # @param args is arguments passed to the block
   def run(*args)
     _block.call(*args)    if _block 
+  end
+
+  def help_desc
+    "  #{_spec}  #{_desc}"    if _desc
   end
 
 end
@@ -64,9 +73,9 @@ class Command < InterfaceElement
 end
 
 
+
 # TODO FEATURE consider doing unambiguous matches for shortened options
 # TODO FEATURE consider the option default value setting the type
-
 # TODO FEATURE add option shortable:true
 class Option < InterfaceElement
   
@@ -74,10 +83,12 @@ class Option < InterfaceElement
 
   attr_reader :value
 
+  # uses args:
+  #   :default
+  #   :spec  
   def post_initialize(args)
     super(args)
     @_spec = args[:spec]
-    @_desc = args[:desc] 
     @value = args[:default]
   end
 
@@ -101,15 +112,10 @@ class Option < InterfaceElement
     arg_to_value(arg) != nil
   end
 
-  def help_desc
-    "  #{_spec}  #{_desc}"    if _desc
-  end
-
 end
 
 
-# used options:
-#   negatable:true
+
 class SwitchOption < Option
 
   def self.spec_to_name(spec)
@@ -118,6 +124,8 @@ class SwitchOption < Option
 
   attr_reader :_negatable
 
+  # used args:
+  #   negatable:true
   def post_initialize(args)
     super(args)
     @_negatable = args[:negatable]
