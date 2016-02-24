@@ -5,6 +5,9 @@ module Miniparse
 ERR_HELP_REQ = 1
   
 # behaviour controlers
+# TODO FEATURE implement controlers as options in Parser.new()
+# defaults: { error_unrecognized:true, autoshort:false}
+# TODO FEATURE consider using auto short options
 Error_on_unrecognized_option = true
 
 
@@ -46,6 +49,7 @@ class Parser
   end
 
   def add_command(name, opts={}, &block)
+    # TODO consider check and raise for duplicate commands
     args = opts.merge(spec:name)
     cmd = Command.new(args, &block)
     @_commands[cmd.name] = cmd

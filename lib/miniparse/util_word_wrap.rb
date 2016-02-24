@@ -1,7 +1,5 @@
 module Miniparse
   
-  ####### UTILITY GENERAL FUNCTIONS
-  
   # wrap a text at word boundaries
   # 
   # @param text: the text to wrap
@@ -46,7 +44,10 @@ module Miniparse
     lines
   end
 
-  
+  # wrap two texts in two separate columms
+  #
+  # @param separator: a string of characters inserted at every line between the two collums, for example ' ' or ' | ' 
+  # @return text with line breaks inserted as necessasry 
   def Miniparse.two_cols_word_wrap(*args)
     two_cols_word_wrap_lines(*args).join("\n")
   end

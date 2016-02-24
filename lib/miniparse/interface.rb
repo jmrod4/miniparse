@@ -26,7 +26,7 @@ class InterfaceElement
 
   def initialize(args, &block)
     p args
-    spec = args[:spec] 
+    spec = args.fetch[:spec] 
 
     @name = self.class.spec_to_name(spec)
     raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
@@ -64,7 +64,10 @@ class Command < InterfaceElement
 end
 
 
+# TODO FEATURE consider doing unambiguous matches for shortened options
+# TODO FEATURE consider the option default value setting the type
 
+# TODO FEATURE add option shortable:true
 class Option < InterfaceElement
   
   attr_reader :_spec, :_desc
@@ -105,7 +108,8 @@ class Option < InterfaceElement
 end
 
 
-
+# used options:
+#   negatable:true
 class SwitchOption < Option
 
   def self.spec_to_name(spec)
@@ -116,15 +120,15 @@ class SwitchOption < Option
 
   def post_initialize(args)
     super(args)
-    @_negate = args[:negate]
-    @_negate = true    if _negate.nil?
+    @_negatable = args[:negatable]
+    @_negatable = true    if _negatable.nil?
   end
 
 
   def arg_to_value(arg)
     if arg == "--#{name}"
       true
-    elsif _negate && arg == "--no-#{name}"
+    elsif _negatable && arg == "--no-#{name}"
       false
     else
       nil
@@ -132,7 +136,7 @@ class SwitchOption < Option
   end
 
   def help_usage
-    if _negate
+    if _negatable
       "[--[no-]#{name}]"
     else
       "[--#{name}]"

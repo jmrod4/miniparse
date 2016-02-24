@@ -3,6 +3,7 @@
 *~
 
 # temp or generated dirs
+kk*
 /.bundle/
 /.yardoc
 /Gemfile.lock

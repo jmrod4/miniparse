@@ -3,8 +3,7 @@
 #
 
 require "miniparse/version"
-
-require "miniparse/util"
+require "miniparse/util_word_wrap"
 
 require "miniparse/interface"
 require "miniparse/option_broker"
