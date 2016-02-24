@@ -26,7 +26,7 @@ class InterfaceElement
 
   def initialize(args, &block)
     p args
-    spec = args.fetch[:spec] 
+    spec = args.fetch(:spec) 
 
     @name = self.class.spec_to_name(spec)
     raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
@@ -116,7 +116,7 @@ class SwitchOption < Option
     spec_pattern_to_name(spec, /^--(\w[\w-]+)$/)
   end
 
-  attr_reader :_negate
+  attr_reader :_negatable
 
   def post_initialize(args)
     super(args)
@@ -159,7 +159,7 @@ class FlagOption < Option
   end
 
   def arg_to_value(arg)
-    if arg =~ /^--#{name}[=| ](.*)$/
+    if arg =~ /^--#{name}[=| ](.+)$/
       $1
     else
       nil

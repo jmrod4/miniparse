@@ -28,7 +28,7 @@ class Parser
     @_command_brokers = {}
     @current_command = nil
     
-    add_option("--help", nil, negate:false) do
+    add_option("--help", nil, negatable:false) do
       puts _help_usage
       puts
       puts _help_global_options
@@ -44,10 +44,12 @@ class Parser
     end
   end
 
-  def add_option(spec, desc, opts={}, &block)
+  # FIXME document arguments
+  def add_option(spec, desc=nil, opts={}, &block)
     _current_broker.add_option(spec, desc, opts, &block)
   end
 
+  # FIXME document arguments
   def add_command(name, opts={}, &block)
     # TODO consider check and raise for duplicate commands
     args = opts.merge(spec:name)
@@ -57,18 +59,6 @@ class Parser
     @current_command = cmd.name
   end
     
-  # @param argv is like ARGV
-  # @return index number of the first found command, nil if not found
-  def _index_command(argv)
-    _commands.values.each do |cmd|
-      index = argv.find_index do |arg|
-        cmd.check(arg)
-      end
-      return index if    index
-    end
-    nil
-  end
-
   # @param argv is like ARGV but just for this parser
   # @return unprocessed arguments
   def parse(argv)
@@ -90,6 +80,18 @@ class Parser
   # @return  parsed (i.e. specified) command options
   def command_options
     _command_brokers[command_parsed].parsed_options    if command_parsed
+  end
+
+  # @param argv is like ARGV
+  # @return index number of the first found command, nil if not found
+  def _index_command(argv)
+    _commands.values.each do |cmd|
+      index = argv.find_index do |arg|
+        cmd.check(arg)
+      end
+      return index if    index
+    end
+    nil
   end
 
   # @param argv is like ARGV
