@@ -28,7 +28,7 @@ class InterfaceElement
   #   :spec
   #   :desc
   def initialize(args, &block)
-    Miniparse::debug args.inspect      if args[:debug]
+    Miniparse.debug args.inspect      if args[:debug]
      
     spec = args.fetch(:spec) 
     @_desc = args[:desc] 
@@ -50,6 +50,7 @@ class InterfaceElement
     _block.call(*args)    if _block 
   end
 
+  # @return text of an option specification and description
   def help_desc
     "  #{_spec}  #{_desc}"    if _desc
   end
@@ -129,7 +130,7 @@ class SwitchOption < Option
   def post_initialize(args)
     super(args)
     @_negatable = args[:negatable]
-    @_negatable = true    if _negatable.nil?
+    @_negatable = Miniparse.controls[:autonegatable]    if _negatable.nil?
   end
 
 

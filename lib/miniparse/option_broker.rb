@@ -36,7 +36,7 @@ class OptionBroker
 	      "#{opt.class} invalid invocation format '#{arg}'"
 	end
       else
-        if (Miniparse::Error_on_unrecognized_option) && (arg[0] == '-')
+        if (Miniparse.controls[:error_unrecognized]) && (arg[0] == '-')
           raise ArgumentError, 
 	      "unrecognized option '#{arg}'"
         end

@@ -5,19 +5,32 @@ module Miniparse
 ERR_HELP_REQ = 1
   
 
-# TODO FEATURE consider using auto short options
 
 
-# TODO FEATURE implement controlers as options in Parser.new()
-=begin
-default_controls = { 
+
+# TODO FEATURE consider implement controlers as options in Parser.new() instead of in a module variable
+
+attr_accessor :controls
+
+@@controls = { 
   error_unrecognized:true, 
-  autoshort:false, 
-  autonegatable:true}
-=end
+  autonegatable:true,
+  # TODO FEATURE consider using auto short options
+  autoshort:false}
 
+def self.controls
+  @@controls
+end
+
+def self.controls=(opts)
+  @@controls.merge!(opts)
+end
+
+  
+  
+  
 # behaviour controlers
-Error_on_unrecognized_option = true
+#Error_on_unrecognized_option = true
 
 
 class Parser
@@ -31,7 +44,8 @@ class Parser
 
   attr_reader :_global_broker, :_commands, :_command_brokers 
   
-  def initialize
+  def initialize(opts = {})
+    Miniparse.controls = opts
     @_global_broker = OptionBroker.new
     @_commands = {}
     @_command_brokers = {}
