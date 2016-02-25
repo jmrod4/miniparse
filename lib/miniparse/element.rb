@@ -22,7 +22,7 @@ class InterfaceElement
 
   attr_reader :name
 
-  attr_reader :_block, :_desc
+  attr_reader :_spec, :_desc, :_block 
 
   # uses args:
   #   :spec
@@ -30,10 +30,10 @@ class InterfaceElement
   def initialize(args, &block)
     Miniparse.debug args.inspect      if args[:debug]
      
-    spec = args.fetch(:spec) 
+    @_spec = args.fetch(:spec) 
     @_desc = args[:desc] 
 
-    @name = self.class.spec_to_name(spec)
+    @name = self.class.spec_to_name(_spec)
     raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
     @_block = block
     post_initialize(args)
@@ -85,16 +85,12 @@ end
 # TODO FEATURE add option shortable:true
 class Option < InterfaceElement
   
-  attr_reader :_spec, :_desc
-
   attr_reader :value
 
   # uses args:
   #   :default
-  #   :spec  
   def post_initialize(args)
     super(args)
-    @_spec = args[:spec]
     @value = args[:default]
   end
 
@@ -128,15 +124,14 @@ class SwitchOption < Option
 
   attr_reader :_negatable
 
-  # used args:
+  # uses args:
   #   negatable:true
   def post_initialize(args)
     super(args)
     @_negatable = args[:negatable]
     @_negatable = Miniparse.controls[:autonegatable]    if _negatable.nil?
   end
-
-
+  
   def arg_to_value(arg)
     if arg == "--#{name}"
       true
@@ -156,6 +151,7 @@ class SwitchOption < Option
   end
 
 end
+
 
 
 class FlagOption < Option

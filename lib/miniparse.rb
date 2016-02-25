@@ -6,7 +6,7 @@ require "miniparse/version"
 require "miniparse/util_word_wrap"
 require "miniparse/util_debug"
 
-require "miniparse/interface"
+require "miniparse/element"
 require "miniparse/option_broker"
 require "miniparse/parser"
 

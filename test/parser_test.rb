@@ -2,29 +2,6 @@ require 'test_helper'
 
 
 
-class TestParserInterface < Minitest::Test
-  
-  def setup
-    @object = Miniparse::Parser.new
-  end
-  
-  def test_parser_respond
-    assert_respond_to @object, :add_option
-    assert_respond_to @object, :parse
-    assert_respond_to @object, :args
-    assert_respond_to @object, :options
-    assert_respond_to @object, :add_command
-    assert_respond_to @object, :current_command
-    assert_respond_to @object, :parsed_command
-    assert_respond_to @object, :command_args
-    assert_respond_to @object, :command_options
-    assert_respond_to @object, :help_text
-  end
-  
-end
-
-
-
 class TestParserAddOption < Minitest::Test
 
   def setup
@@ -200,7 +177,7 @@ class TestParserParseCommands < Minitest::Test
     @parser.add_command("list", nil) { k = 2 }
     k = 3
     @parser.parse ["list"]
-    assert_equal nil, @parser.args[0]
+    assert_nil @parser.args[0]
     assert_equal 2, k    
   end
 
@@ -291,7 +268,7 @@ class TestParserCurrentCommand < Minitest::Test
   def test_without_command
     parser = Miniparse::Parser.new
 
-    assert_equal nil, parser.current_command
+    assert_nil parser.current_command
   end
     
 end
@@ -307,7 +284,7 @@ class TestParserCommandParsed < Minitest::Test
   
   def test_no_command
     @parser.parse "a b c".split
-    assert_equal nil, @parser.parsed_command
+    assert_nil @parser.parsed_command
   end
   
   def test_command
@@ -328,7 +305,17 @@ class TestParserCommandArgs < Minitest::Test
     @parser.add_option "--sort", "sort listing"
   end
   
-  # FIXME
+  def test_no_command
+    @parser.parse "a b c".split
+    
+    assert_nil @parser.command_args 
+  end
+  
+  def test_command
+    @parser.parse "a b list c d".split
+    assert_equal "c d".split, @parser.command_args
+  end
+
 end
 
 
@@ -342,7 +329,22 @@ class TestParserCommandOptions < Minitest::Test
     @parser.add_option "--sort", "sort listing"
   end
   
-  # FIXME
+  def test_no_command
+    @parser.parse "a b c".split
+    
+    assert_nil @parser.command_options 
+  end
+  
+  def test_command
+    @parser.parse "a b list c d".split
+    assert @parser.command_options.empty?
+  end
+
+  def test_command_options
+    @parser.parse "a b list --sort c d".split
+    assert @parser.command_options[:sort]
+  end
+
 end
 
 
@@ -357,23 +359,23 @@ class TestHelpText < Minitest::Test
 
   def test_negatable
     @parser.add_option("--sort", nil, negatable:true)
-    assert @parser.help_text =~ /\[--\[no-\]sort\]/ 
+    assert @parser.help_text.include? "[--[no-]sort]" 
   end
   
   def test_not_negatable
     @parser.add_option("--sort", nil, negatable:false)
-    assert @parser.help_text =~ /\[--sort\]/ 
+    assert @parser.help_text.include? "[--sort]" 
   end
 
   def test_desc
     help = @parser.help_text
-    assert help =~ /\s+--debug\s+/
-    assert help =~ /activate debug/
-    refute help =~ /\s+--verbose\s+/
+    assert help=~ /--debug\s+/
+    assert help.include? "activate debug"
+    refute help=~ /--verbose.\s+/
   end
   
   def test_flag_msg
-    assert @parser.help_text =~ /\[--verbose LEVEL\]/ 
+    assert @parser.help_text.include? "[--verbose LEVEL]"
   end
   
 end
