@@ -10,8 +10,6 @@ ERR_HELP_REQ = 1
 
 # TODO FEATURE consider implement controlers as options in Parser.new() instead of in a module variable
 
-attr_accessor :controls
-
 @@controls = { 
   error_unrecognized:true, 
   autonegatable:true,
@@ -40,7 +38,7 @@ class Parser
   # @return after parsing (i.e. specified) rest of arguments 
   attr_reader :args, :command_args 
   # @return parsed (i.e. specified) command or nil if no command
-  attr_reader :command_parsed
+  attr_reader :parsed_command
 
   attr_reader :_global_broker, :_commands, :_command_brokers 
   
@@ -54,14 +52,6 @@ class Parser
     add_option("--help", nil, negatable:false) do
       puts help_msg
       exit ERR_HELP_REQ
-    end
-  end
-
-  def _current_broker
-    if current_command
-      _command_brokers[current_command]
-    else
-      _global_broker
     end
   end
 
@@ -86,9 +76,9 @@ class Parser
     global_argv, command_arg, command_argv = _split_argv(argv)
     @args = _global_broker.parse_argv(global_argv)
     if command_arg
-      @command_parsed = Command.spec_to_name(command_arg)
-      @command_args = _command_brokers[command_parsed].parse_argv(command_argv)
-      _commands[command_parsed].run
+      @parsed_command = Command.spec_to_name(command_arg)
+      @command_args = _command_brokers[parsed_command].parse_argv(command_argv)
+      _commands[parsed_command].run
     end
     args
   end
@@ -100,11 +90,19 @@ class Parser
 
   # @return  parsed (i.e. specified) command options
   def command_options
-    _command_brokers[command_parsed].parsed_options    if command_parsed
+    _command_brokers[parsed_command].parsed_options    if parsed_command
   end
   
-  def help_msg
+  def help_text
     _help_usage + "\n\n" + _help_global_options
+  end
+
+  def _current_broker
+    if current_command
+      _command_brokers[current_command]
+    else
+      _global_broker
+    end
   end
 
   # @param argv is like ARGV

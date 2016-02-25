@@ -55,6 +55,13 @@ class InterfaceElement
     "  #{_spec}  #{_desc}"    if _desc
   end
 
+  # @param arg is like an ARGV element
+  # @return true if arg specifies this object
+  def check(arg)
+    raise NotImplementedError, 
+        "#{self.class} cannot respond to '#{__method__}'"
+  end
+
 end
 
 
@@ -65,8 +72,6 @@ class Command < InterfaceElement
     spec_pattern_to_name(spec, /^(\w[\w-]+)$/)
   end
 
-  # @param arg is like an ARGV element
-  # @return true if arg specifies this object
   def check(arg)
     arg == name.to_s
   end
@@ -93,6 +98,10 @@ class Option < InterfaceElement
     @value = args[:default]
   end
 
+  def check(arg)
+    arg_to_value(arg) != nil
+  end
+  
   def arg_to_value(arg)
     raise NotImplementedError, 
         "#{self.class} cannot respond to '#{__method__}'"
@@ -105,12 +114,6 @@ class Option < InterfaceElement
       run(val)
     end
     val
-  end
-
-  # @param arg is like an ARGV element
-  # @return true if arg specifies this object
-  def check(arg)
-    arg_to_value(arg) != nil
   end
 
 end

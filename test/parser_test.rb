@@ -2,146 +2,30 @@ require 'test_helper'
 
 
 
-class TestCommandArgs < Minitest::Test
-  # FIXME
-end
-
-
-
-class TestCommandOptions < Minitest::Test
-  # FIXME
-end
-
-
-
-class TestParse < Minitest::Test
-
+class TestParserInterface < Minitest::Test
+  
   def setup
-    @parser = Miniparse::Parser.new
-    @parser.add_option "--debug", "activate debug"
-    @parser.add_option "--verbose LEVEL", nil
-  end
-
-  def test_no_arguments 
-    assert_raises(ArgumentError, 
-        "FEATURE parser doesn't default to ARGV"
-        ) { @parser.parse }
+    @object = Miniparse::Parser.new
   end
   
-  def test_nothing
-    assert_equal([],    @parser.parse([]), 
-      "if nothing to do, do nothing 1")
-    assert_equal([""],  @parser.parse([""]), 
-      "if nothing to do, do nothing 2")
-    assert_equal([" "], @parser.parse([" "]), 
-      "if nothing to do, do nothing 3")
-    
-    #assert_equal([],    @parser.parse(""), 
-    #  "not significative either result")
+  def test_parser_respond
+    assert_respond_to @object, :add_option
+    assert_respond_to @object, :parse
+    assert_respond_to @object, :args
+    assert_respond_to @object, :options
+    assert_respond_to @object, :add_command
+    assert_respond_to @object, :current_command
+    assert_respond_to @object, :parsed_command
+    assert_respond_to @object, :command_args
+    assert_respond_to @object, :command_options
+    assert_respond_to @object, :help_text
   end
-
-  def test_bad_arg
-    assert_raises(NoMethodError, 
-        "FEATURE parser doesn't implicitly convert string, for trivial conversions like 'a b c'.split let the user do it"
-        ) { @parser.parse "a b c" }
-  end  
   
-  def test_only_arguments
-    argv = "a b c".split
-    @parser.parse argv
-    args = @parser.args    
-    assert_respond_to args, :each, "parse returns enumerable" 
- 
-    assert_equal argv, args 
-    assert_equal args, @parser.args
-        
-    assert @parser.options.empty?
-    refute @parser.current_command
-    refute @parser.command_parsed
-    # value of command_args not significant
-    # refute @parser.command_args
-    # value of command_options not significant
-    # refute @parser.command_options
-  end
-
 end
 
 
 
-class TestOptionsParse < Minitest::Test
-
-  def setup
-    @parser = Miniparse::Parser.new
-    @parser.add_option "--debug", "activate debug"
-    @parser.add_option "--verbose LEVEL", nil
-  end
-
-  def test_bad_arg
-    assert_raises(ArgumentError) { @parser.parse ["--other"] }
-    assert_raises(ArgumentError) { @parser.parse ["--"] }
-    assert_raises(ArgumentError) { @parser.parse ["---"] }
-    assert_raises(ArgumentError) { @parser.parse ["-o"] }
-    assert_raises(ArgumentError) { @parser.parse ["-"] }
-    assert_raises(ArgumentError) { @parser.parse ["--verbose"] }
-    assert_raises(ArgumentError) { @parser.parse ["--verbose="] }
-
-    assert_raises(ArgumentError) { @parser.parse ["-d"] }
-    assert_raises(ArgumentError) { @parser.parse ["--deb"] }
-  end
-  
-  def test_switch
-    @parser.parse []
-    refute @parser.options[:debug]
-    
-    @parser.parse ["--debug"]
-    refute @parser.options.empty?
-    assert @parser.options[:debug]
-
-    refute @parser.current_command
-    refute @parser.command_parsed
-
-    @parser.parse []
-    refute @parser.options[:debug].nil?
-  end
-  
-  def test_switch_negate
-    @parser.parse ["--no-debug"]
-    refute @parser.options.empty?
-    refute @parser.options[:debug]
-  end
-
-  def test_flag
-    @parser.parse []
-    refute @parser.options[:verbose]
-    
-    @parser.parse ["--verbose", "1"]
-    refute @parser.options.empty?
-    assert_equal "1", @parser.options[:verbose]
-
-    refute @parser.current_command
-    refute @parser.command_parsed
-    
-    @parser.parse []
-    refute @parser.options[:verbose].nil?
-  end
-  
-  def test_flag_alternative_1
-    @parser.parse ["--verbose 2"]
-    refute @parser.options.empty?
-    assert_equal "2", @parser.options[:verbose]
-  end
-  
-  def test_flag_alternative_2
-    @parser.parse ["--verbose=3"]
-    refute @parser.options.empty?
-    assert_equal "3", @parser.options[:verbose]
-  end
-
-end
-
-
-
-class TestAddOption < Minitest::Test
+class TestParserAddOption < Minitest::Test
 
   def setup
     @parser = Miniparse::Parser.new
@@ -183,7 +67,116 @@ end
 
 
 
-class TestCommandParse < Minitest::Test
+class TestParserParse < Minitest::Test
+
+  def setup
+    @parser = Miniparse::Parser.new
+    @parser.add_option "--debug", "activate debug"
+    @parser.add_option "--verbose LEVEL", nil
+  end
+
+  def test_no_arguments 
+    assert_raises(ArgumentError, 
+        "FEATURE parser doesn't default to ARGV"
+        ) { @parser.parse }
+  end
+  
+  def test_nothing
+    assert_equal([],    @parser.parse([]), 
+      "if nothing to do, do nothing 1")
+    assert_equal([""],  @parser.parse([""]), 
+      "if nothing to do, do nothing 2")
+    assert_equal([" "], @parser.parse([" "]), 
+      "if nothing to do, do nothing 3")
+    
+    #assert_equal([],    @parser.parse(""), 
+    #  "not significative either result")
+  end
+
+  def test_bad_arg
+    assert_raises(NoMethodError, 
+        "FEATURE parser doesn't implicitly convert string, for trivial conversions like 'a b c'.split let the user do it"
+        ) { @parser.parse "a b c" }
+  end  
+
+end
+
+
+
+class TestParserParseOptions < Minitest::Test
+
+  def setup
+    @parser = Miniparse::Parser.new
+    @parser.add_option "--debug", "activate debug"
+    @parser.add_option "--verbose LEVEL", nil
+  end
+
+  def test_bad_arg
+    assert_raises(ArgumentError) { @parser.parse ["--other"] }
+    assert_raises(ArgumentError) { @parser.parse ["--"] }
+    assert_raises(ArgumentError) { @parser.parse ["---"] }
+    assert_raises(ArgumentError) { @parser.parse ["-o"] }
+    assert_raises(ArgumentError) { @parser.parse ["-"] }
+    assert_raises(ArgumentError) { @parser.parse ["--verbose"] }
+    assert_raises(ArgumentError) { @parser.parse ["--verbose="] }
+
+    assert_raises(ArgumentError) { @parser.parse ["-d"] }
+    assert_raises(ArgumentError) { @parser.parse ["--deb"] }
+  end
+  
+  def test_switch
+    @parser.parse []
+    refute @parser.options[:debug]
+    
+    @parser.parse ["--debug"]
+    refute @parser.options.empty?
+    assert @parser.options[:debug]
+
+    refute @parser.current_command
+    refute @parser.parsed_command
+
+    @parser.parse []
+    refute @parser.options[:debug].nil?
+  end
+  
+  def test_switch_negate
+    @parser.parse ["--no-debug"]
+    refute @parser.options.empty?
+    refute @parser.options[:debug]
+  end
+
+  def test_flag
+    @parser.parse []
+    refute @parser.options[:verbose]
+    
+    @parser.parse ["--verbose", "1"]
+    refute @parser.options.empty?
+    assert_equal "1", @parser.options[:verbose]
+
+    refute @parser.current_command
+    refute @parser.parsed_command
+    
+    @parser.parse []
+    refute @parser.options[:verbose].nil?
+  end
+  
+  def test_flag_alternative_1
+    @parser.parse ["--verbose 2"]
+    refute @parser.options.empty?
+    assert_equal "2", @parser.options[:verbose]
+  end
+  
+  def test_flag_alternative_2
+    @parser.parse ["--verbose=3"]
+    refute @parser.options.empty?
+    assert_equal "3", @parser.options[:verbose]
+  end
+
+end
+
+
+
+class TestParserParseCommands < Minitest::Test
 
   def setup
     @parser = Miniparse::Parser.new
@@ -209,6 +202,44 @@ class TestCommandParse < Minitest::Test
     @parser.parse ["list"]
     assert_equal nil, @parser.args[0]
     assert_equal 2, k    
+  end
+
+end
+
+
+
+
+
+class TestParserArgs
+
+  def setup
+    @parser = Miniparse::Parser.new
+  end
+
+  def test_only_arguments
+    argv = "a b c".split
+    @parser.parse argv
+    args = @parser.args    
+    assert_respond_to args, :each, "parse returns enumerable" 
+ 
+    assert_equal argv, args 
+    assert_equal args, @parser.args
+  end
+  
+end
+
+
+
+class TestParserOptions
+
+  def setup
+    @parser = Miniparse::Parser.new
+  end
+
+  def test_only_arguments
+    @parser.parse "a b c".split
+    args = @parser.args    
+    assert @parser.options.empty?
   end
 
 end
@@ -248,7 +279,75 @@ end
 
 
 
-class TestHelpMsg < Minitest::Test
+class TestParserCurrentCommand < Minitest::Test
+
+  def test_with_command
+    parser = Miniparse::Parser.new
+    parser.add_command "list", "list something"
+    
+    assert_equal :list, parser.current_command
+  end
+  
+  def test_without_command
+    parser = Miniparse::Parser.new
+
+    assert_equal nil, parser.current_command
+  end
+    
+end
+
+
+
+class TestParserCommandParsed < Minitest::Test
+
+  def setup
+    @parser = Miniparse::Parser.new
+    @parser.add_command "list", "list something"
+  end
+  
+  def test_no_command
+    @parser.parse "a b c".split
+    assert_equal nil, @parser.parsed_command
+  end
+  
+  def test_command
+    @parser.parse "a b list c d".split
+    assert_equal :list, @parser.parsed_command
+  end
+
+end
+
+
+
+class TestParserCommandArgs < Minitest::Test
+
+  def setup
+    @parser = Miniparse::Parser.new
+    @parser.add_option "--debug", nil
+    @parser.add_command "list", "list something"
+    @parser.add_option "--sort", "sort listing"
+  end
+  
+  # FIXME
+end
+
+
+
+class TestParserCommandOptions < Minitest::Test
+
+  def setup
+    @parser = Miniparse::Parser.new
+    @parser.add_option "--debug", nil
+    @parser.add_command "list", "list something"
+    @parser.add_option "--sort", "sort listing"
+  end
+  
+  # FIXME
+end
+
+
+
+class TestHelpText < Minitest::Test
 
   def setup
     @parser = Miniparse::Parser.new
@@ -258,23 +357,23 @@ class TestHelpMsg < Minitest::Test
 
   def test_negatable
     @parser.add_option("--sort", nil, negatable:true)
-    assert @parser.help_msg =~ /\[--\[no-\]sort\]/ 
+    assert @parser.help_text =~ /\[--\[no-\]sort\]/ 
   end
   
   def test_not_negatable
     @parser.add_option("--sort", nil, negatable:false)
-    assert @parser.help_msg =~ /\[--sort\]/ 
+    assert @parser.help_text =~ /\[--sort\]/ 
   end
 
   def test_desc
-    help = @parser.help_msg
+    help = @parser.help_text
     assert help =~ /\s+--debug\s+/
     assert help =~ /activate debug/
     refute help =~ /\s+--verbose\s+/
   end
   
   def test_flag_msg
-    assert @parser.help_msg =~ /\[--verbose LEVEL\]/ 
+    assert @parser.help_text =~ /\[--verbose LEVEL\]/ 
   end
   
 end
