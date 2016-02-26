@@ -13,6 +13,7 @@ class OptionBroker
   end
 
   def add_option(*args, &block)
+    # TODO consider check and raise for duplicate options
     opt = _new_option(*args, &block)
     @_added_options << opt
   end
@@ -27,14 +28,13 @@ class OptionBroker
       opt = _check_arg(arg)
       if opt
         val = opt.parse_value(arg)
-	if val.nil? && av.size > 0 && av[0][0] != '-'
-	  new_arg = arg + "=" + av.shift
-	  val = opt.parse_value(new_arg)
+	    if val.nil? && av.size > 0 && av[0][0] != '-'
+	      new_arg = arg + "=" + av.shift
+	      val = opt.parse_value(new_arg)
         end
-	if val.nil?
-          raise ArgumentError,
-	      "#{opt.class} invalid invocation format '#{arg}'"
-	end
+	    if val.nil?
+          raise ArgumentError, "#{opt.class} invalid invocation format '#{arg}'"
+	    end
       else
         if (Miniparse.control[:error_unrecognized]) && (arg[0] == '-')
           raise ArgumentError, 

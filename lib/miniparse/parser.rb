@@ -1,6 +1,19 @@
 module Miniparse
 
 
+
+def self.try_argument
+  begin
+    yield
+  rescue ArgumentError => e
+    raise    unless Miniparse.control[:catch_argument_error]
+    $stderr.puts("#{File.basename($PROGRAM_NAME)}: error: #{e.message}")
+    # (#{e.backtrace[-1]})")
+    exit ERR_ARGUMENT
+  end
+end
+
+
 class Parser
 
   # @return the command the next add_option will apply to
@@ -31,9 +44,12 @@ class Parser
     _current_broker.add_option(spec, desc, opts, &block)
   end
 
+  # FEATURE if a command already exists it gets overwritten (and its options lost)
   # FIXME document arguments
   def add_command(name, desc, opts={}, &block)
-    # TODO consider check and raise for duplicate commands
+    if !Command.valid_spec(name)
+      raise SyntaxError, "unknown or invalid command specification '#{name}'"
+    end
     args = opts.merge(spec:name, desc:desc)
     cmd = Command.new(args, &block)
     @_commands[cmd.name] = cmd
@@ -44,24 +60,16 @@ class Parser
   # @param argv is like ARGV but just for this parser
   # @return unprocessed arguments
   def parse(argv)
-    begin
-      _parse(argv)
-    rescue ArgumentError => e
-      raise    if Miniparse.control[:raise_argument_error]
-      $stderr.puts("#{File.basename($PROGRAM_NAME)}: error: #{e.message} (#{e.backtrace[-1]})")
-      exit ERR_ARGUMENT
+    Miniparse.try_argument do
+      global_argv, command_arg, command_argv = _split_argv(argv)
+      @args = _global_broker.parse_argv(global_argv)
+      if command_arg
+        @parsed_command = Command.spec_to_name(command_arg)
+        @command_args = _command_brokers[parsed_command].parse_argv(command_argv)
+        _commands[parsed_command].run
+      end
+      args
     end
-  end
-  
-  def _parse(argv)
-    global_argv, command_arg, command_argv = _split_argv(argv)
-    @args = _global_broker.parse_argv(global_argv)
-    if command_arg
-      @parsed_command = Command.spec_to_name(command_arg)
-      @command_args = _command_brokers[parsed_command].parse_argv(command_argv)
-      _commands[parsed_command].run
-    end
-    args
   end
 
   # @return parsed (i.e. specified) global options

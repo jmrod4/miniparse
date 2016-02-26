@@ -11,7 +11,7 @@ ERR_ARGUMENT = 2
 @@behaviour_controls = { 
   error_unrecognized: true, 
   autonegatable: true,
-  raise_argument_error: false,
+  catch_argument_error: true,
   
   # help output
   formatted_help: true,

@@ -2,7 +2,7 @@ require 'minitest/pride'
 require 'minitest/autorun'
 require 'miniparse'
 
-Miniparse.set_control(raise_argument_error: true)
+Miniparse.set_control(catch_argument_error: false)
 
 
 def echo(obj)
