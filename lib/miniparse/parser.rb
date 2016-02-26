@@ -1,36 +1,6 @@
 module Miniparse
 
 
-# error exit codes
-ERR_HELP_REQ = 1
-  
-
-
-
-
-# TODO FEATURE consider implement controlers as options in Parser.new() instead of in a module variable
-
-@@controls = { 
-  error_unrecognized:true, 
-  autonegatable:true,
-  # TODO FEATURE consider using auto short options
-  autoshort:false}
-
-def self.controls
-  @@controls
-end
-
-def self.controls=(opts)
-  @@controls.merge!(opts)
-end
-
-  
-  
-  
-# behaviour controlers
-#Error_on_unrecognized_option = true
-
-
 class Parser
 
   # @return the command the next add_option will apply to
@@ -43,14 +13,15 @@ class Parser
   attr_reader :_global_broker, :_commands, :_command_brokers 
   
   def initialize(opts = {})
-    Miniparse.controls = opts
+    Miniparse.set_control opts
+    
     @_global_broker = OptionBroker.new
     @_commands = {}
     @_command_brokers = {}
     @current_command = nil
     
     add_option("--help", nil, negatable:false) do
-      puts help_msg
+      puts help_text
       exit ERR_HELP_REQ
     end
   end
@@ -73,6 +44,16 @@ class Parser
   # @param argv is like ARGV but just for this parser
   # @return unprocessed arguments
   def parse(argv)
+    begin
+      _parse(argv)
+    rescue ArgumentError => e
+      raise    if Miniparse.control[:raise_argument_error]
+      $stderr.puts("#{File.basename($PROGRAM_NAME)}: error: #{e.message} (#{e.backtrace[-1]})")
+      exit ERR_ARGUMENT
+    end
+  end
+  
+  def _parse(argv)
     global_argv, command_arg, command_argv = _split_argv(argv)
     @args = _global_broker.parse_argv(global_argv)
     if command_arg
@@ -94,7 +75,27 @@ class Parser
   end
   
   def help_text
-    _help_usage + "\n\n" + _help_global_options
+    text = _help_usage + "\nOptions:\n" + _help_global_options
+    if !_commands.empty?
+      nodesc = []
+      help_desc = _commands.keys.sort.collect do |key| 
+         help = _commands[key].help_desc 
+         nodesc << _commands[key].name    unless help
+         help
+      end
+      text_desc = help_desc.compact.join("\n")
+      text_nodesc = nodesc.join(", ")
+      if text_desc.size > 0
+        text += "\nCommands:\n"
+        text += text_desc 
+      end
+      if text_nodesc.size > 0
+        text += "\nMore commands: \n"
+        text += ' '*Miniparse.control[:width_indent]
+        text += text_nodesc
+      end
+    end
+    text
   end
 
   def _current_broker
@@ -130,9 +131,28 @@ class Parser
     end
   end
 
-  def _help_usage(detailed:true)
-    global = (detailed)? @_global_broker.help_usage : "[global_options]"
-    "usage: #{$PROGRAM_NAME} #{global} [<command> [command_options]]"
+  def _help_usage
+    if Miniparse.control[:detailed_usage]
+      right_text = @_global_broker.help_usage
+    elsif _commands.empty?
+      right_text = "[options]"
+    else
+      right_text = "[global_options]"   
+    end
+    if !_commands.empty?
+      right_text += " <command> [command_options]"
+    end
+    right_text += " <args>"
+    left_text = "usage: #{File.basename($PROGRAM_NAME)}"
+    
+    if Miniparse.control[:formatted_help]
+      width_display = Miniparse.control[:width_display]
+      width_left = left_text.size
+      Miniparse.two_cols_word_wrap(left_text, ' ', right_text, 
+          width_left, width_display - 1 - width_left)
+    else
+      left_text + " " + right_text
+    end
   end
 
   def _help_global_options
@@ -140,6 +160,7 @@ class Parser
   end
 
 end
+
 
 
 end

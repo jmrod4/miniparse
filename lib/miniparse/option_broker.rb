@@ -36,7 +36,7 @@ class OptionBroker
 	      "#{opt.class} invalid invocation format '#{arg}'"
 	end
       else
-        if (Miniparse.controls[:error_unrecognized]) && (arg[0] == '-')
+        if (Miniparse.control[:error_unrecognized]) && (arg[0] == '-')
           raise ArgumentError, 
 	      "unrecognized option '#{arg}'"
         end
@@ -55,9 +55,7 @@ class OptionBroker
   end
 
   def help_desc
-    helps = @_added_options.collect do |opt|
-      opt.help_desc 
-    end
+    helps = @_added_options.collect { |opt| opt.help_desc }
     helps.compact.join("\n")
   end
 

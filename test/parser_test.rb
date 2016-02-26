@@ -315,6 +315,11 @@ class TestParserCommandArgs < Minitest::Test
     @parser.parse "a b list c d".split
     assert_equal "c d".split, @parser.command_args
   end
+  
+  def test_command_option
+    @parser.parse "a b list c --sort d".split
+    assert_equal "c d".split, @parser.command_args
+  end
 
 end
 
@@ -353,8 +358,8 @@ class TestHelpText < Minitest::Test
 
   def setup
     @parser = Miniparse::Parser.new
-    @parser.add_option "--debug", "activate debug"
-    @parser.add_option "--verbose LEVEL", nil
+    @parser.add_option("--debug", "activate debug")
+    @parser.add_option("--verbose LEVEL", nil)
   end
 
   def test_negatable

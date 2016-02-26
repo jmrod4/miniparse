@@ -6,7 +6,7 @@ module Miniparse
   # @param width: the maximum width allowed for on line before inserting line breaks
   # @param reformat: if true then the previous line breaks are removed and then the text wrappeed
   # @return text with line breaks inserted as necessasry 
-  def Miniparse.word_wrap(text, width, reformat:false)
+  def self.word_wrap(text, width, reformat:false)
     text = text.gsub(/\s*\n/, ' ') if reformat
     
     clean = (text[-1] != "\n")
@@ -18,7 +18,7 @@ module Miniparse
   # same as word_wrap(...) but returns an array of lines
   #
   # @return an array of lines containing the rearranged text
-  def Miniparse.word_wrap_lines(*args)
+  def self.word_wrap_lines(*args)
     word_wrap(*args).split("\n")
   end
 
@@ -27,7 +27,7 @@ module Miniparse
   #
   # @param separator: a string of characters inserted at every line between the two collums, for example ' ' or ' | ' 
   # @return an array of lines containing the merged and rearranged texts
-  def Miniparse.two_cols_word_wrap_lines(text_left, separator, text_right, 
+  def self.two_cols_word_wrap_lines(text_left, separator, text_right, 
         width_left, width_right, reformat:false)
     left = word_wrap_lines(text_left, width_left, reformat:reformat)
     right = word_wrap_lines(text_right, width_right, reformat:reformat)
@@ -46,9 +46,9 @@ module Miniparse
 
   # wrap two texts in two separate columms
   #
-  # @param separator: a string of characters inserted at every line between the two collums, for example ' ' or ' | ' 
+  # @param see two_cols_word_wrap_lines(...) 
   # @return text with line breaks inserted as necessasry 
-  def Miniparse.two_cols_word_wrap(*args)
+  def self.two_cols_word_wrap(*args)
     two_cols_word_wrap_lines(*args).join("\n")
   end
 
