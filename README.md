@@ -2,11 +2,13 @@
 
 **Miniparse is a easy of use yet flexible and powerful ruby library for parsing command-line options.**
 
-The main objetive is ease of use and flexibility so the specification is self-documenting. The library allows a lot of customization but with sane defaults so **you don't need to learn nothing to start using it**.
+The main objetive of this implementation is minimun boiler plate with ease of use resulting in a self documenting specification. 
+
+Additionally the library is quite flexible and allows a lot of customization but always with sane defaults so **you don't need to learn nothing to start using it**.
 
 ## How to use
 
-You can get full documentation in [Github jmrod4/miniparse](https://github.com/jmrod4/miniparse) but please find below a short and fast example.
+Please find below a short but meaningful example (you can get more examples at the [Github miniparse repository](https://github.com/jmrod4/minparse/tree/master/examples)).
 
 Let's try putting the following code in `yourprogram.rb`
 
@@ -56,7 +58,7 @@ then to use it add to the top of your ruby source file
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/jmrod4/miniparse.
 
-After checking out the repo you can
+After checking out the repo you can:
 
  * run `bin/setup` to install dependencies
  * then run `rake test` to run the tests

@@ -354,8 +354,7 @@ end
 
 
 
-class TestHelpText < Minitest::Test
-
+module HelpUsage
   def setup
     @parser = Miniparse::Parser.new
     @parser.add_option("--debug", "activate debug")
@@ -372,6 +371,25 @@ class TestHelpText < Minitest::Test
     assert @parser.help_text.include? "[--sort]" 
   end
 
+  def test_flag_msg
+    assert @parser.help_text.include? "[--verbose LEVEL]"
+  end
+end
+
+
+
+class TestHelpUsage < Minitest::Test
+
+  include HelpUsage
+
+end
+
+
+
+class TestHelpText < Minitest::Test
+
+  include HelpUsage
+  
   def test_desc
     help = @parser.help_text
     assert help=~ /--debug\s+/
@@ -379,10 +397,7 @@ class TestHelpText < Minitest::Test
     refute help=~ /--verbose.\s+/
   end
   
-  def test_flag_msg
-    assert @parser.help_text.include? "[--verbose LEVEL]"
-  end
-  
+  # FIXME add command help tests
 end
 
 

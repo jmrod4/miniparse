@@ -73,7 +73,8 @@ class InterfaceElement
 
     if Miniparse.control[:formatted_help]
       lines = Miniparse.two_cols_word_wrap_lines(
-              _spec.to_s, separator, _desc, width_left, width_right)
+              _spec.to_s, separator, _desc + more_desc_help,
+              width_left, width_right)
       lines.collect! { |line|  " "*width_indent + line  }
       lines.join("\n")
     else
@@ -82,6 +83,12 @@ class InterfaceElement
       s += '  '
       s += _desc
     end
+  end
+  
+  
+  # hook to add additional descriptions to help
+  def more_desc_help
+    ""
   end
 
 end
@@ -198,6 +205,10 @@ class FlagOption < Option
 
   def help_usage
     "[#{_spec}]"
+  end
+
+  def more_desc_help
+    (value)? " (#{value})" : ""
   end
 
 end

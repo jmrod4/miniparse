@@ -1,18 +1,6 @@
 module Miniparse
 
-
-
-def self.try_argument
-  begin
-    yield
-  rescue ArgumentError => e
-    raise    unless Miniparse.control[:catch_argument_error]
-    $stderr.puts("#{File.basename($PROGRAM_NAME)}: error: #{e.message}")
-    # (#{e.backtrace[-1]})")
-    exit ERR_ARGUMENT
-  end
-end
-
+# TODO FEATURE enable command help <command> to get help on any command
 
 class Parser
 
@@ -60,7 +48,7 @@ class Parser
   # @param argv is like ARGV but just for this parser
   # @return unprocessed arguments
   def parse(argv)
-    Miniparse.try_argument do
+    try_argument do
       global_argv, command_arg, command_argv = _split_argv(argv)
       @args = _global_broker.parse_argv(global_argv)
       if command_arg
@@ -68,7 +56,11 @@ class Parser
         @command_args = _command_brokers[parsed_command].parse_argv(command_argv)
         _commands[parsed_command].run
       end
-      args
+      if (! Miniparse.control[:global_args]) && (! args.empty?)
+        error = (_commands.empty?)? "extra arguments" : "unrecognized command"
+        raise ArgumentError, "#{error} '#{args[0]}'"
+      end
+      args      
     end
   end
 
@@ -83,7 +75,7 @@ class Parser
   end
   
   def help_text
-    text = _help_usage + "\nOptions:\n" + _help_global_options
+    text = help_usage + "\nOptions:\n" + _help_global_options
     if !_commands.empty?
       nodesc = []
       help_desc = _commands.keys.sort.collect do |key| 
@@ -106,11 +98,48 @@ class Parser
     text
   end
 
+  def help_usage
+    if Miniparse.control[:detailed_usage]
+      right_text = @_global_broker.help_usage
+    elsif _commands.empty?
+      right_text = "[options]"
+    else
+      right_text = "[global_options]"   
+    end
+    if !_commands.empty?
+      right_text += " <command> [command_options]"
+    end
+    right_text += " <args>"
+    left_text = "usage: #{File.basename($PROGRAM_NAME)}"
+    
+    if Miniparse.control[:formatted_help]
+      width_display = Miniparse.control[:width_display]
+      width_left = left_text.size
+      Miniparse.two_cols_word_wrap(left_text, ' ', right_text, 
+          width_left, width_display - 1 - width_left)
+    else
+      left_text + " " + right_text
+    end
+  end
+
   def _current_broker
     if current_command
       _command_brokers[current_command]
     else
       _global_broker
+    end
+  end
+
+  def try_argument
+    begin
+      yield
+    rescue ArgumentError => e
+      raise    unless Miniparse.control[:catch_argument_error]
+      prg = File.basename($PROGRAM_NAME)
+      $stderr.puts "#{prg}: error: #{e.message}"
+      $stderr.puts help_usage
+      # (#{e.backtrace[-1]})")
+      exit ERR_ARGUMENT
     end
   end
 
@@ -136,30 +165,6 @@ class Parser
       [global_argv, argv[index], command_argv]
     else  
       [argv, nil, []]
-    end
-  end
-
-  def _help_usage
-    if Miniparse.control[:detailed_usage]
-      right_text = @_global_broker.help_usage
-    elsif _commands.empty?
-      right_text = "[options]"
-    else
-      right_text = "[global_options]"   
-    end
-    if !_commands.empty?
-      right_text += " <command> [command_options]"
-    end
-    right_text += " <args>"
-    left_text = "usage: #{File.basename($PROGRAM_NAME)}"
-    
-    if Miniparse.control[:formatted_help]
-      width_display = Miniparse.control[:width_display]
-      width_left = left_text.size
-      Miniparse.two_cols_word_wrap(left_text, ' ', right_text, 
-          width_left, width_display - 1 - width_left)
-    else
-      left_text + " " + right_text
     end
   end
 

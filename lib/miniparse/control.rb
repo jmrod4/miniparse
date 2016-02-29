@@ -7,11 +7,11 @@ ERR_HELP_REQ = 1
 ERR_ARGUMENT = 2
 
 
-
 @@behaviour_controls = { 
   error_unrecognized: true, 
   autonegatable: true,
   catch_argument_error: true,
+  global_args: true,
   
   # help output
   formatted_help: true,

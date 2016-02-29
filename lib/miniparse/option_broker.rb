@@ -1,6 +1,7 @@
 module Miniparse 
 
 
+
 class OptionBroker
 
   attr_reader :parsed_options
@@ -88,6 +89,7 @@ class OptionBroker
   end
 
 end
+
 
 
 end
