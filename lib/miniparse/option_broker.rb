@@ -4,19 +4,18 @@ module Miniparse
 
 class OptionBroker
 
-  attr_reader :parsed_options
-
-  attr_reader :_added_options
+  attr_reader :parsed_values
 
   def initialize
-    @parsed_options = {}
-    @_added_options = []
+    @parsed_values = {}
+    @added_options = {}
   end
 
-  def add_option(*args, &block)
-    # TODO consider check and raise for duplicate options
-    opt = _new_option(*args, &block)
-    @_added_options << opt
+  def add_option(args, &block)
+    opt = new_option(args, &block)
+    # FEATURE duplicate option overwrite the old one
+    # NOTE defining a switch option and a flag option with the same name doesn't work (the first one gets overwritten)
+    @added_options[opt.name] = opt
   end
 
   # @param argv is like ARGV but just for this broker
@@ -26,10 +25,10 @@ class OptionBroker
     rest_argv = []
     while av.size > 0
       arg = av.shift
-      opt = _check_arg(arg)
+      opt = check_arg(arg)
       if opt
         val = opt.parse_value(arg)
-	    if val.nil? && av.size > 0 && av[0][0] != '-'
+	    if val.nil? && (av.size > 0) && (av[0][0] != '-')
 	      new_arg = arg + "=" + av.shift
 	      val = opt.parse_value(new_arg)
         end
@@ -38,54 +37,53 @@ class OptionBroker
 	    end
       else
         if (Miniparse.control[:error_unrecognized]) && (arg[0] == '-')
-          raise ArgumentError, 
-	      "unrecognized option '#{arg}'"
+          raise ArgumentError, "unrecognized option '#{arg}'"
         end
         rest_argv << arg
       end
     end
-    _update_parsed_options
+    update_parsed_values
     rest_argv
   end
  
   def help_usage
-    helps = @_added_options.collect do |opt|
+    helps = added_options.values.collect do |opt|
       opt.help_usage 
     end
     helps.compact.join(" ")
   end
 
   def help_desc
-    helps = @_added_options.collect { |opt| opt.help_desc }
+    helps = added_options.values.collect { |opt| opt.help_desc }
     helps.compact.join("\n")
   end
 
-  def _new_option(spec, desc, opts, &block)
-    args = opts.merge(spec:spec, desc:desc)
-    if SwitchOption.valid_spec(spec)
+protected
+
+  attr_reader :added_options
+
+  def new_option(args, &block)
+    if SwitchOption.valid_spec args[:spec]
       SwitchOption.new(args, &block)
-    elsif FlagOption.valid_spec(spec)
+    elsif FlagOption.valid_spec args[:spec]
       FlagOption.new(args, &block)
     else
       raise SyntaxError, 
-          "unknown or invalid option specification '#{spec}'"
+          "unknown or invalid option specification '#{args[:spec]}'"
     end
   end
 
-  def _check_arg(arg)
-    _added_options.each do |opt|
-      return opt    if opt.check(arg)
-    end
+  def check_arg(arg)
+    added_options.values.each { |opt|  return opt  if opt.check(arg) }
     nil
   end
 
-  def _update_parsed_options
-    @parsed_options = {}
-    _added_options.each do |opt|
-      if opt.value != nil
-        @parsed_options[opt.name] = opt.value
-      end
+  def update_parsed_values
+    @parsed_values = {}
+    added_options.values.each do |opt| 
+      @parsed_values[opt.name] = opt.value    if opt.value != nil
     end
+    parsed_values
   end
 
 end

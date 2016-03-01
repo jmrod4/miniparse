@@ -4,53 +4,28 @@ module Miniparse
 
 class InterfaceElement
 
-  def self.spec_pattern_to_name(spec, pattern)
-    if spec =~ pattern
-      $1.to_sym
-    else
-      nil
-    end
+  def self.valid_spec(spec)
+    spec_to_name(spec) != nil
   end
 
+  # subclass need to overide 
   def self.spec_to_name(spec)
     raise NotImplementedError, 
         "#{self.class} cannot respond to '#{__method__}'"
   end
 
-  def self.valid_spec(spec)
-    spec_to_name(spec) != nil
+  def self.spec_pattern_to_name(spec, pattern)
+    (spec =~ pattern)  ?  $1.to_sym  :  nil
   end
 
-  attr_reader :name
-
-  attr_reader :_spec, :_desc, :_block 
-
-  # uses args:
-  #   :spec
-  #   :desc
-  def initialize(args, &block)
-    Miniparse.debug args.inspect      if args[:debug]
-     
-    @_spec = args.fetch(:spec) 
-    @_desc = args[:desc] 
-
-    @name = self.class.spec_to_name(_spec)
-    raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
-    @_block = block
-    post_initialize(args)
-  end
-
-  def post_initialize(args)
-    nil
-  end 
+  attr_reader :name, :desc
 
   # runs the associated block with specified arguments
   #
   # @param args is arguments passed to the block
   def run(*args)
-    _block.call(*args)    if _block 
+    block.call(*args)    if block 
   end
-
 
   # @param arg is like an ARGV element
   # @return true if arg specifies this object
@@ -61,7 +36,7 @@ class InterfaceElement
 
   # @return text of an option specification and description
   def help_desc
-    return nil    unless _desc
+    return nil    unless desc
     
     separator = '  '
     width_indent = Miniparse.control[:width_indent]
@@ -73,22 +48,42 @@ class InterfaceElement
 
     if Miniparse.control[:formatted_help]
       lines = Miniparse.two_cols_word_wrap_lines(
-              _spec.to_s, separator, _desc + more_desc_help,
+              spec.to_s, separator, new_desc,
               width_left, width_right)
       lines.collect! { |line|  " "*width_indent + line  }
       lines.join("\n")
     else
       s = "%*s" % [width_indent, separator]
-      s += "%-*s" % [width_left, _spec]
+      s += "%-*s" % [width_left, spec]
       s += '  '
-      s += _desc
+      s += desc + new_desc
     end
   end
+
+protected
+
+  # subclass hook for initializing
+  def post_initialize(args)
+    nil
+  end 
+     
+  # subclass hook for changing description
+  def new_desc
+    desc
+  end
   
-  
-  # hook to add additional descriptions to help
-  def more_desc_help
-    ""
+  attr_reader :spec, :block 
+
+  # uses args:
+  #   :spec
+  #   :desc
+  def initialize(args, &block)
+    @spec = args.fetch(:spec) 
+    @desc = args[:desc] 
+    @block = block
+    @name = self.class.spec_to_name(spec)
+    raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
+    post_initialize(args)
   end
 
 end
@@ -97,12 +92,14 @@ end
 
 class Command < InterfaceElement
 
-  def self.spec_to_name(spec)
-    spec_pattern_to_name(spec, /^(\w[\w-]+)$/)
-  end
-
   def check(arg)
     arg == name.to_s
+  end
+
+protected
+
+  def self.spec_to_name(spec)
+    spec_pattern_to_name(spec, /\A(\w[\w-]+)\z/)
   end
 
 end
@@ -116,20 +113,8 @@ class Option < InterfaceElement
   
   attr_reader :value
 
-  # uses args:
-  #   :default
-  def post_initialize(args)
-    super(args)
-    @value = args[:default]
-  end
-
   def check(arg)
     arg_to_value(arg) != nil
-  end
-  
-  def arg_to_value(arg)
-    raise NotImplementedError, 
-        "#{self.class} cannot respond to '#{__method__}'"
   end
 
   def parse_value(arg)
@@ -141,6 +126,19 @@ class Option < InterfaceElement
     val
   end
 
+  def arg_to_value(arg)
+    raise NotImplementedError, "#{self.class} cannot respond to '#{__method__}'"
+  end
+
+protected
+
+  # uses args:
+  #   :default
+  def post_initialize(args)
+    super(args)
+    @value = args[:default]
+  end
+
 end
 
 
@@ -148,35 +146,33 @@ end
 class SwitchOption < Option
 
   def self.spec_to_name(spec)
-    spec_pattern_to_name(spec, /^--(\w[\w-]+)$/)
+    spec_pattern_to_name(spec, /\A--(\w[\w-]+)\z/)
   end
 
-  attr_reader :_negatable
-
-  # uses args:
-  #   negatable:true
-  def post_initialize(args)
-    super(args)
-    @_negatable = args[:negatable]
-    @_negatable = Miniparse.control[:autonegatable]    if _negatable.nil?
+  def help_usage
+    negatable  ?  "[--[no-]#{name}]"  :  "[--#{name}]"
   end
   
   def arg_to_value(arg)
     if arg == "--#{name}"
       true
-    elsif _negatable && arg == "--no-#{name}"
+    elsif negatable && arg == "--no-#{name}"
       false
     else
       nil
     end
   end
+  
+protected
 
-  def help_usage
-    if _negatable
-      "[--[no-]#{name}]"
-    else
-      "[--#{name}]"
-    end
+  attr_reader :negatable
+
+  # uses args:
+  #   negatable:true
+  def post_initialize(args)
+    super(args)
+    @negatable = args[:negatable]
+    @negatable = Miniparse.control[:autonegatable]    if negatable.nil?
   end
 
 end
@@ -186,29 +182,27 @@ end
 class FlagOption < Option
 
   def self.spec_to_name(spec)
-    spec_pattern_to_name(spec, /^--(\w[\w-]+)[=| ]\S+$/)
+    spec_pattern_to_name(spec, /\A--(\w[\w-]+)[=| ]\S+\z/)
   end
-
+  
   # @param arg is like an ARGV element
   # @return true if arg specifies this option
   def check(arg)
-     super(arg) || (arg =~ /^--#{name}$/)
-  end
-
-  def arg_to_value(arg)
-    if arg =~ /^--#{name}[=| ](.+)$/
-      $1
-    else
-      nil
-    end
+     super(arg) || (arg =~ /\A--#{name}\z/)
   end
 
   def help_usage
-    "[#{_spec}]"
+    "[#{spec}]"
   end
 
-  def more_desc_help
-    (value)? " (#{value})" : ""
+  def arg_to_value(arg)
+    (arg =~ /\A--#{name}[=| ](.+)\z/)  ?  $1  :  nil
+  end
+  
+protected
+
+  def new_desc
+    desc + ( value ? " (#{value})" : "" )
   end
 
 end

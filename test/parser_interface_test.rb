@@ -18,7 +18,8 @@ class TestParserInterface < Minitest::Test
     assert_respond_to @object, :parsed_command
     assert_respond_to @object, :command_args
     assert_respond_to @object, :command_options
-    assert_respond_to @object, :help_text
+    assert_respond_to @object, :help_desc
+    assert_respond_to @object, :help_usage
   end
   
 end

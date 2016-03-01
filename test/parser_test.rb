@@ -34,10 +34,12 @@ class TestParserAddOption < Minitest::Test
   def test_duplicate_option
     @parser.add_option("--debug", nil, negatable:true)
     @parser.parse ["--no-debug"]
-    # FIXME not sane behaviour: the second one gets added but when parsing it uses the first found and not the last added
     @parser.add_option("--debug", nil, negatable:false)
-    # assert_raises(ArgumentError) { @parser.parse ["--no-debug"] }
-    @parser.parse ["--no-debug"]
+    # overwritten!
+    assert_raises(ArgumentError) { @parser.parse ["--no-debug"] }
+    @parser.add_option("--debug FILE", nil)
+    # overwritten!
+    assert_raises(ArgumentError) { @parser.parse ["--debug"] }
   end
   
 end
@@ -360,20 +362,6 @@ module HelpUsage
     @parser.add_option("--debug", "activate debug")
     @parser.add_option("--verbose LEVEL", nil)
   end
-
-  def test_negatable
-    @parser.add_option("--sort", nil, negatable:true)
-    assert @parser.help_text.include? "[--[no-]sort]" 
-  end
-  
-  def test_not_negatable
-    @parser.add_option("--sort", nil, negatable:false)
-    assert @parser.help_text.include? "[--sort]" 
-  end
-
-  def test_flag_msg
-    assert @parser.help_text.include? "[--verbose LEVEL]"
-  end
 end
 
 
@@ -381,6 +369,20 @@ end
 class TestHelpUsage < Minitest::Test
 
   include HelpUsage
+
+  def test_negatable
+    @parser.add_option("--sort", nil, negatable:true)
+    assert @parser.help_usage.include? "[--[no-]sort]" 
+  end
+  
+  def test_not_negatable
+    @parser.add_option("--sort", nil, negatable:false)
+    assert @parser.help_usage.include? "[--sort]" 
+  end
+
+  def test_flag_msg
+    assert @parser.help_usage.include? "[--verbose LEVEL]"
+  end
 
 end
 
@@ -391,7 +393,7 @@ class TestHelpText < Minitest::Test
   include HelpUsage
   
   def test_desc
-    help = @parser.help_text
+    help = @parser.help_desc
     assert help=~ /--debug\s+/
     assert help.include? "activate debug"
     refute help=~ /--verbose.\s+/

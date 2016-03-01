@@ -34,7 +34,6 @@ class TestElementInterface < Minitest::Test
 end
 
 
-
 class TestCommand < Minitest::Test
   
   def test_class_methods
