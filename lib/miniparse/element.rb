@@ -39,14 +39,14 @@ class InterfaceElement
     return nil    unless desc
     
     separator = '  '
-    width_indent = Miniparse.control[:width_indent]
-    width_left = Miniparse.control[:width_left] -
-                 Miniparse.control[:width_indent]
-    width_right = Miniparse.control[:width_display] - 
+    width_indent = Miniparse.control(:width_indent)
+    width_left = Miniparse.control(:width_left) -
+                 Miniparse.control(:width_indent)
+    width_right = Miniparse.control(:width_display) - 
                   separator.size -
-                  Miniparse.control[:width_left] 
+                  Miniparse.control(:width_left)
 
-    if Miniparse.control[:formatted_help]
+    if Miniparse.control(:formatted_help)
       lines = Miniparse.two_cols_word_wrap_lines(
               spec.to_s, separator, new_desc,
               width_left, width_right)
@@ -172,7 +172,7 @@ protected
   def post_initialize(args)
     super(args)
     @negatable = args[:negatable]
-    @negatable = Miniparse.control[:autonegatable]    if negatable.nil?
+    @negatable = Miniparse.control(:autonegatable)    if negatable.nil?
   end
 
 end

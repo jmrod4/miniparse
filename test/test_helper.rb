@@ -2,7 +2,10 @@ require 'minitest/pride'
 require 'minitest/autorun'
 require 'miniparse'
 
-Miniparse.set_control(catch_argument_error: false)
+Miniparse.set_control(
+  rescue_argument_error: false,
+  raise_global_args: false,
+  )
 
 
 # FIXME integrate automatic tests for the examples

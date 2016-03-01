@@ -1,6 +1,7 @@
 module Miniparse
 
 
+
 class Parser
 
   # @return the command the next add_option will apply to
@@ -10,9 +11,7 @@ class Parser
   # @return parsed (i.e. specified) command or nil if no command
   attr_reader :parsed_command
 
-  def initialize(opts = {})
-    Miniparse.set_control opts
-    
+  def initialize()
     @global_broker = OptionBroker.new
     @commands = {}
     @command_brokers = {}
@@ -71,7 +70,7 @@ class Parser
         @command_args = command_brokers[parsed_command].parse_argv(command_argv)
         commands[parsed_command].run 
       end
-      if (! Miniparse.control[:global_args]) && (! args.empty?)
+      if Miniparse.control(:raise_global_args) && (! args.empty?)
         error = (commands.empty?)? "extra arguments" : "unrecognized command"
         raise ArgumentError, "#{error} '#{args[0]}'"
       end
@@ -110,7 +109,7 @@ class Parser
       text_nodesc = nodesc.join(", ")
       unless text_nodesc.empty?
         text += "\nMore commands: \n"
-        text += ' '*Miniparse.control[:width_indent]
+        text += ' '*Miniparse.control(:width_indent)
         text += text_nodesc
       end
     end
@@ -119,7 +118,7 @@ class Parser
 
   # @return a usage message
   def help_usage
-    if Miniparse.control[:detailed_usage]
+    if Miniparse.control(:detailed_usage)
       right_text = @global_broker.help_usage
     elsif commands.empty?
       right_text = "[options]"
@@ -149,9 +148,10 @@ protected
     begin
       yield
     rescue ArgumentError => except
-      raise    unless Miniparse.control[:catch_argument_error]
+      raise    unless Miniparse.control(:rescue_argument_error)
       prg = File.basename($PROGRAM_NAME)
       $stderr.puts "#{prg}: error: #{except.message}"
+      $stderr.puts
       $stderr.puts help_usage
       # (#{except.backtrace[-1]})")
       exit ERR_ARGUMENT
@@ -188,7 +188,7 @@ protected
         cmd = command_args[index].to_sym
         header = "Command #{cmd}:  #{commands[cmd].desc}"
         text = "\n"
-        text += Miniparse.word_wrap(header, Miniparse.control[:width_display])
+        text += Miniparse.word_wrap(header, Miniparse.control(:width_display))
         text += "\n\n"
         text += help_usage_format(
                     "#{cmd} #{command_brokers[cmd].help_usage}")
@@ -196,17 +196,17 @@ protected
         text += command_brokers[cmd].help_desc
         
         puts text
-        exit 0
+        exit ERR_HELP_REQ
       else
-        raise ArgumentError, "use help <command> to get help"
+        raise ArgumentError, "use 'help <command>' to get help"
       end
     end
   end
   
   def help_usage_format(right_text)
     left_text = "usage: #{File.basename($PROGRAM_NAME)}"
-    if Miniparse.control[:formatted_help]
-      width_display = Miniparse.control[:width_display]
+    if Miniparse.control(:formatted_help)
+      width_display = Miniparse.control(:width_display)
       width_left = left_text.size
       Miniparse.two_cols_word_wrap(left_text, ' ', right_text, 
           width_left, width_display - 1 - width_left)
