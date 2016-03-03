@@ -15,7 +15,7 @@ module ElementInterface
 
   def test_element_subclass_interface
     assert @object.respond_to? :post_initialize, true
-    assert @object.respond_to? :new_desc, true
+    assert @object.respond_to? :add_desc, true
   end
   
 end

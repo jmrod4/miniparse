@@ -2,8 +2,11 @@
 *.swp
 *~
 
-# temp or generated dirs
+# temp files or dirs
 kk*
+/tmp/
+
+# generated dirs
 /.bundle/
 /.yardoc
 /Gemfile.lock
@@ -12,5 +15,4 @@ kk*
 /doc/
 /pkg/
 /spec/reports/
-/tmp/
 

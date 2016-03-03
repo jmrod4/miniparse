@@ -15,6 +15,14 @@ class OptionBroker
     opt = new_option(args, &block)
     # FEATURE duplicate option overwrite the old one
     # NOTE defining a switch option and a flag option with the same name doesn't work (the first one gets overwritten)
+    if opt.shortable
+      duplicate = added_options.values.collect { |o|  
+         (o.shortable && o.name.to_s[0] == opt.name.to_s[0])? o.name : nil }
+      duplicate.compact!
+      unless duplicate.empty? || duplicate.include?(opt.name)
+        raise SyntaxError, "shortable option '#{opt.name}' conflicts with previously defined '" + duplicate.join(', ') + "'"
+      end
+    end
     @added_options[opt.name] = opt
   end
 
@@ -74,8 +82,17 @@ protected
   end
 
   def check_arg(arg)
-    added_options.values.each { |opt|  return opt  if opt.check(arg) }
-    nil
+    match = added_options.values.collect { |opt|  opt.check(arg) ? opt : nil }
+    match.compact!
+    if match.size > 1
+      # NOTE this shouldn't be happening, just a sanity check
+      names = match.collect { |opt|  opt.name }
+      raise "Ambiguous options: '" + names.join(', ') + "'"
+    elsif match.size > 0
+      match[0]
+    else      
+      nil
+    end
   end
 
   def update_parsed_values

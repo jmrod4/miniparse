@@ -33,6 +33,7 @@ class InterfaceElement
     raise NotImplementedError, 
         "#{self.class} cannot respond to '#{__method__}'"
   end
+  
 
   # @return text of an option specification and description
   def help_desc
@@ -48,15 +49,16 @@ class InterfaceElement
 
     if Miniparse.control(:formatted_help)
       lines = Miniparse.two_cols_word_wrap_lines(
-              spec.to_s, separator, new_desc,
+              spec.to_s + add_spec, separator, 
+              desc + add_desc,
               width_left, width_right)
       lines.collect! { |line|  " "*width_indent + line  }
       lines.join("\n")
     else
       s = "%*s" % [width_indent, separator]
-      s += "%-*s" % [width_left, spec]
+      s += "%-*s" % [width_left, spec.to_s + add_spec]
       s += '  '
-      s += desc + new_desc
+      s += desc + add_desc
     end
   end
 
@@ -68,8 +70,12 @@ protected
   end 
      
   # subclass hook for changing description
-  def new_desc
-    desc
+  def add_desc
+    ""
+  end
+  
+  def add_spec
+    ""
   end
   
   attr_reader :spec, :block 
@@ -108,10 +114,9 @@ end
 
 # TODO FEATURE consider doing unambiguous matches for shortened options
 # TODO FEATURE consider the option default value setting the type
-# TODO FEATURE add option shortable:true
 class Option < InterfaceElement
   
-  attr_reader :value
+  attr_reader :value, :shortable
 
   def check(arg)
     arg_to_value(arg) != nil
@@ -131,12 +136,17 @@ class Option < InterfaceElement
   end
 
 protected
-
+  
   # uses args:
   #   :default
   def post_initialize(args)
     super(args)
     @value = args[:default]
+    @shortable = args.fetch(:shortable, Miniparse.control(:autoshortable))
+  end
+  
+  def add_spec
+    shortable ? ', -' + name.to_s[0] : ""
   end
 
 end
@@ -156,8 +166,10 @@ class SwitchOption < Option
   def arg_to_value(arg)
     if arg == "--#{name}"
       true
-    elsif negatable && arg == "--no-#{name}"
+    elsif negatable && (arg == "--no-#{name}")
       false
+    elsif shortable && (arg == '-' + name.to_s[0])
+      true
     else
       nil
     end
@@ -171,10 +183,13 @@ protected
   #   negatable:true
   def post_initialize(args)
     super(args)
-    @negatable = args[:negatable]
-    @negatable = Miniparse.control(:autonegatable)    if negatable.nil?
+    @negatable = args.fetch(:negatable, Miniparse.control(:autonegatable))
   end
 
+  def add_desc
+    value ? " (on by default)" : "" 
+  end
+  
 end
 
 
@@ -196,13 +211,19 @@ class FlagOption < Option
   end
 
   def arg_to_value(arg)
-    (arg =~ /\A--#{name}[=| ](.+)\z/)  ?  $1  :  nil
+    if arg =~ /\A--#{name}[=| ](.+)\z/
+      $1
+    elsif shortable && (arg =~ /\A-#{name.to_s[0]}[=| ](.+)\z/)
+      $1
+    else
+      nil
+    end
   end
   
 protected
 
-  def new_desc
-    desc + ( value ? " (#{value})" : "" )
+  def add_desc
+    value ? " (#{value})" : "" 
   end
 
 end

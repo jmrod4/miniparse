@@ -32,11 +32,13 @@ class TestParserAddOption < Minitest::Test
   end
   
   def test_duplicate_option
-    @parser.add_option("--debug", nil, negatable:true)
+    @parser.add_option("--debug", nil, negatable: true)
     @parser.parse ["--no-debug"]
-    @parser.add_option("--debug", nil, negatable:false)
+    
+    @parser.add_option("--debug", nil, negatable: false)
     # overwritten!
     assert_raises(ArgumentError) { @parser.parse ["--no-debug"] }
+    
     @parser.add_option("--debug FILE", nil)
     # overwritten!
     assert_raises(ArgumentError) { @parser.parse ["--debug"] }
@@ -86,8 +88,9 @@ class TestParserParseOptions < Minitest::Test
 
   def setup
     @parser = Miniparse::Parser.new
-    @parser.add_option "--debug", "activate debug"
-    @parser.add_option "--verbose LEVEL", nil
+    @parser.add_option "--debug", "activate debug", 
+          negatable: true, shortable: false
+    @parser.add_option "--verbose LEVEL", nil, shortable: false
   end
 
   def test_bad_arg
@@ -356,10 +359,11 @@ end
 
 
 
-module HelpUsage
+module HelpUsageDetailed
   def setup
+    Miniparse.set_control(detailed_usage: true)
     @parser = Miniparse::Parser.new
-    @parser.add_option("--debug", "activate debug")
+    @parser.add_option("--debug", "activate debug", shortable: true)
     @parser.add_option("--verbose LEVEL", nil)
   end
 end
@@ -368,7 +372,7 @@ end
 
 class TestHelpUsage < Minitest::Test
 
-  include HelpUsage
+  include HelpUsageDetailed
 
   def test_negatable
     @parser.add_option("--sort", nil, negatable:true)
@@ -390,13 +394,14 @@ end
 
 class TestHelpText < Minitest::Test
 
-  include HelpUsage
+  include HelpUsageDetailed
   
   def test_desc
     help = @parser.help_desc
-    assert help=~ /--debug\s+/
+    assert help=~ /\s--debug\W/
     assert help.include? "activate debug"
-    refute help=~ /--verbose.\s+/
+    refute help=~ /\s--verbose\s/
+    assert help=~ /\W-d\W/
   end
   
   # FIXME add command help tests

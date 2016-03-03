@@ -11,7 +11,7 @@ class Parser
   # @return parsed (i.e. specified) command or nil if no command
   attr_reader :parsed_command
 
-  def initialize()
+  def initialize
     @global_broker = OptionBroker.new
     @commands = {}
     @command_brokers = {}
@@ -62,6 +62,10 @@ class Parser
   # @param argv is like ARGV but just for this parser
   # @return unprocessed arguments
   def parse(argv)
+    if Miniparse.control(:help_cmdline_empty) && argv.empty?
+      puts help_usage
+      exit ERR_HELP_REQ  
+    end
     try_argument do
       global_argv, command_arg, command_argv = split_argv(argv)
       @args = global_broker.parse_argv(global_argv)

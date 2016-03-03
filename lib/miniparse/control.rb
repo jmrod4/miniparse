@@ -16,11 +16,12 @@ ERR_ARGUMENT = 2
   # wrong or invalid options) and exits with a helpful msg  
   rescue_argument_error: true,
   
-  # TODO FEATURE gives help is command line empty
+  # gives help if command line is empty
   help_cmdline_empty: true,
   
-  # raises an ArgumentError if there are global args (after parsing options)
-  raise_global_args: false,
+  # raises an ArgumentError if there are global args 
+  # (after parsing options and commands)
+  raise_global_args: true,
 
   # formats help output with the width... controls
   formatted_help: true,
@@ -34,12 +35,12 @@ ERR_ARGUMENT = 2
   # uses --no-... options for all options
   autonegatable: true,
   
-  # TODO FEATURE uses short options (besides long ones) for all options
-  autoshortable: false,
+  # uses short options (besides long ones) for all options
+  autoshortable: true,
   }
 
 
-# TODO FEATURE consider raising SyntaxError with a custom msg instead of KeyError
+# TODO consider raising SyntaxError with a custom msg instead of KeyError
 def self.control(key)
   # raises a KeyError if key missing
   @@behaviour_controls.fetch(key)
