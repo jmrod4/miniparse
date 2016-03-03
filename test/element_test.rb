@@ -10,6 +10,11 @@ end
 
 class TestElement < Minitest::Test
   
+  def test_subclass_must_override
+    
+  end
+
+
   def test_class_methods
     assert_equal :name,
         Miniparse::InterfaceElement.send(:spec_pattern_to_name, "somenamein", /(name)/)  

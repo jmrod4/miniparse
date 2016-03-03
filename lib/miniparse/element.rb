@@ -16,6 +16,18 @@ class InterfaceElement
 
   attr_reader :name, :desc
 
+  # uses args:
+  #   :spec
+  #   :desc
+  def initialize(args, &block)
+    @spec = args.fetch(:spec) 
+    @desc = args[:desc] 
+    @block = block
+    @name = self.class.spec_to_name(spec)
+    raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
+    post_initialize(args)
+  end
+
   # runs the associated block with specified arguments
   #
   # @param args is arguments passed to the block
@@ -66,6 +78,8 @@ protected
 
 private_class_method :spec_pattern_to_name
 
+  attr_reader :spec, :block 
+
   # subclass hook for initializing
   def post_initialize(args)
     nil
@@ -78,20 +92,6 @@ private_class_method :spec_pattern_to_name
   
   def add_spec
     ""
-  end
-  
-  attr_reader :spec, :block 
-
-  # uses args:
-  #   :spec
-  #   :desc
-  def initialize(args, &block)
-    @spec = args.fetch(:spec) 
-    @desc = args[:desc] 
-    @block = block
-    @name = self.class.send(:spec_to_name, spec)
-    raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
-    post_initialize(args)
   end
 
 end
@@ -134,6 +134,10 @@ class Option < InterfaceElement
     raise NotImplementedError, "#{self.class} cannot respond to '#{__method__}'"
   end
 
+  def help_usage
+    raise NotImplementedError, "#{self.class} cannot respond to '#{__method__}'"
+  end
+
 protected
   
   # uses args:
@@ -158,10 +162,6 @@ class SwitchOption < Option
     spec_pattern_to_name(spec, /\A--(\w[\w-]+)\z/)
   end
 
-  def help_usage
-    negatable  ?  "[--[no-]#{name}]"  :  "[--#{name}]"
-  end
-  
   def arg_to_value(arg)
     if arg == "--#{name}"
       true
@@ -172,6 +172,10 @@ class SwitchOption < Option
     else
       nil
     end
+  end
+  
+  def help_usage
+    negatable  ?  "[--[no-]#{name}]"  :  "[--#{name}]"
   end
   
 protected
@@ -205,10 +209,6 @@ class FlagOption < Option
      super(arg) || (arg =~ /\A--#{name}\z/)
   end
 
-  def help_usage
-    "[#{spec}]"
-  end
-
   def arg_to_value(arg)
     if arg =~ /\A--#{name}[=| ](.+)\z/
       $1
@@ -219,6 +219,10 @@ class FlagOption < Option
     end
   end
   
+  def help_usage
+    "[#{spec}]"
+  end
+
 protected
 
   def add_desc
