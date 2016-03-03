@@ -26,11 +26,6 @@ module ElementInterface
     assert @object.respond_to? :add_spec, true
   end
   
-  def test_element_initalize
-    assert_raises(KeyError) { Miniparse::InterfaceElement.new({}) }
-    assert_raises(KeyError) { Miniparse::InterfaceElement.new desc: "some desc" }
-  end
-  
 end
 
 module ElementRequeriments
@@ -46,19 +41,13 @@ module ElementRequeriments
 end  
 
 
-class ElementStub < Miniparse::InterfaceElement
-  def self.spec_to_name(spec)
-    :stub
-  end
-end
-
 
 class TestElementInterface < Minitest::Test
   
   include ElementInterface
 
   def setup
-    @object = ElementStub.new spec: "some"
+    @object = ElementStub.new(spec: "some")
   end
   
   def test_subclass_override
@@ -107,22 +96,6 @@ module OptionRequeriments
 
 end
 
-class OptionStub < Miniparse::Option
-  def self.spec_to_name(spec)
-    :stub
-  end
-end
-
-class Option2Stub < Miniparse::Option
-  def self.spec_to_name(spec)
-    :stub
-  end
-  def arg_to_value arg
-    "stub"
-  end
-end
-
-
 class TestOptionInterface < Minitest::Test
 
   include ElementInterface
@@ -130,8 +103,8 @@ class TestOptionInterface < Minitest::Test
   include OptionInterface
 
   def setup
-    @obj = OptionStub.new spec: "--some"
-    @object = Option2Stub.new spec: "--some"
+    @obj = Option1Stub.new(spec: "--some")
+    @object = Option2Stub.new(spec: "--some")
   end
   
   def test_subclass_requirements

@@ -15,3 +15,25 @@ Miniparse.set_control(
 def echo(obj)
   puts "---->#{obj.inspect}<-----"
 end
+
+
+
+class ElementStub < Miniparse::InterfaceElement
+  def self.spec_to_name(spec)
+    :stub
+  end
+end
+
+
+class Option1Stub < Miniparse::Option
+  def self.spec_to_name(spec)
+    :stub
+  end
+end
+
+class Option2Stub < Option1Stub
+  def arg_to_value(arg)
+    "stub"
+  end
+end
+

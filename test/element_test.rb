@@ -1,28 +1,22 @@
+
 require 'test_helper'
 
-
-class ElementStub < Miniparse::InterfaceElement
-  def self.spec_to_name(spec)
-    :stub
-  end
-end
 
 
 class TestElement < Minitest::Test
   
-  def test_subclass_must_override
-    
-  end
-
-
   def test_class_methods
-    assert_equal :name,
-        Miniparse::InterfaceElement.send(:spec_pattern_to_name, "somenamein", /(name)/)  
+    assert ElementStub.valid_spec("some")    
+  end
+ 
+  def test_initialize
+    assert_raises(KeyError) { Miniparse::InterfaceElement.new({}) }
+    assert_raises(KeyError) { Miniparse::InterfaceElement.new desc: "some desc" }
   end
   
   def test_run_block
     a = 1
-    element = ElementStub.new(spec:"some") { a = 2 }
+    element = ElementStub.new(spec: "some") { a = 2 }
     a = 3
     element.run
     assert_equal 2, a
@@ -30,10 +24,9 @@ class TestElement < Minitest::Test
 
   def test_help_desc
     element = ElementStub.new(
-        spec:"someopt",
-        desc:"something about some option")
-    assert element.help_desc =~ /someopt/
-    assert element.help_desc =~ /something.+some/
+        spec: "someopt",
+        desc: "something about some option")
+    assert (element.help_desc =~ /someopt\s.*something.+some/)
   end
 
 end
@@ -42,14 +35,19 @@ end
 class TestCommand < Minitest::Test
   
   def test_class_methods
-    assert_equal :list, Miniparse::Command.spec_to_name("list")
+    assert :list == Miniparse::Command.spec_to_name("list")
     assert_nil Miniparse::Command.spec_to_name("list raw")
     assert_nil Miniparse::Command.spec_to_name("list ")
     assert_nil Miniparse::Command.spec_to_name(" list")
+    
+    assert Miniparse::Command.valid_spec("list")
+    refute Miniparse::Command.valid_spec("list raw")
+    refute Miniparse::Command.valid_spec("list ")
+    refute Miniparse::Command.valid_spec(" list")
   end
   
   def test_check
-    cmd = Miniparse::Command.new spec:"list"
+    cmd = Miniparse::Command.new spec: "list"
     assert cmd.check "list"
     refute cmd.check "LIST"
     refute cmd.check "List"
@@ -60,15 +58,22 @@ class TestCommand < Minitest::Test
 end
 
 
-
 class TestOption < Minitest::Test
+
+  def setup
+    @object = Option2Stub.new(spec: "any")
+  end
+  
+  def test_methods
+    assert "stub" == @object.arg_to_value("any")  
+    @object.parse_value("any")
+    assert "stub" == @object.value 
+  end
 
 end
 
 
-
 class TestOptionSwitch < Minitest::Test
-
   def test_class_methods
     assert_equal :list, Miniparse::SwitchOption.spec_to_name("--list")
     assert_nil Miniparse::SwitchOption.spec_to_name(" --list")
@@ -77,29 +82,8 @@ class TestOptionSwitch < Minitest::Test
     assert_nil Miniparse::SwitchOption.spec_to_name("-l")
   end
 
-  def test_check
-    opt = Miniparse::SwitchOption.new spec:"--debug", 
-          negatable: true, shortable: false
-    assert opt.check "--debug"
-    assert opt.check "--no-debug"
-    refute opt.check "--DEBUG"
-    refute opt.check "--debu"
-    refute opt.check "-debug"
-    refute opt.check "debug"
-    refute opt.check "-d"
-    opt = Miniparse::SwitchOption.new spec:"--debug", negatable: false
-    assert opt.check "--debug"
-    refute opt.check "--no-debug"
-  end
-  
-  def test_check_shortable
-    opt = Miniparse::SwitchOption.new spec:"--debug", 
-          negatable: true, shortable: true
-    assert opt.check "-d"
-  end
-  
   def test_arg_to_value
-    opt = Miniparse::SwitchOption.new spec:"--debug", negatable: true 
+    opt = Miniparse::SwitchOption.new spec: "--debug", negatable: true 
     assert_equal true, opt.arg_to_value("--debug")
     assert_equal false, opt.arg_to_value("--no-debug")
     assert_equal nil, opt.arg_to_value("debug")
@@ -108,18 +92,46 @@ class TestOptionSwitch < Minitest::Test
     assert_equal nil, opt.arg_to_value("--no-debug")
     assert_equal nil, opt.arg_to_value("debug")
   end
+
+  def test_check
+    opt = Miniparse::SwitchOption.new spec: "--debug", 
+          negatable: true, shortable: false
+    assert opt.check "--debug"
+    assert opt.check "--no-debug"
+    refute opt.check "--DEBUG"
+    refute opt.check "--debu"
+    refute opt.check "-debug"
+    refute opt.check "debug"
+    refute opt.check "-d"
+    opt = Miniparse::SwitchOption.new spec: "--debug", negatable: false
+    assert opt.check "--debug"
+    refute opt.check "--no-debug"
+  end
+  
+  def test_check_shortable
+    opt = Miniparse::SwitchOption.new spec: "--debug", 
+          negatable: true, shortable: true
+    assert opt.check "-d"
+  end
   
   def test_help_usage
-    opt = Miniparse::SwitchOption.new spec:"--debug", negatable: true 
+    opt = Miniparse::SwitchOption.new spec: "--debug", negatable: true 
     refute opt.help_usage.include? "--debug" 
     assert opt.help_usage.include? "--[no-]debug" 
-    opt = Miniparse::SwitchOption.new spec:"--debug", negatable: false
+    opt = Miniparse::SwitchOption.new spec: "--debug", negatable: false
     assert opt.help_usage.include? "--debug" 
     refute opt.help_usage.include? "--[no-]debug" 
   end
 
+  def test_help_desc
+    opt = Miniparse::SwitchOption.new(spec: "--debug", 
+        desc: "some", default: true)
+    assert opt.help_desc =~ /default/
+    opt = Miniparse::SwitchOption.new(spec: "--debug", 
+        desc: "some", default: false)
+    refute opt.help_desc =~ /default/
+  end
 end
-
 
 
 class TestOptionFlag < Minitest::Test
@@ -158,7 +170,7 @@ class TestOptionFlag < Minitest::Test
   end
   
   def test_arg_to_value
-    opt = Miniparse::FlagOption.new spec:"--debug LEVEL"
+    opt = Miniparse::FlagOption.new spec: "--debug LEVEL"
     assert_equal "1", opt.arg_to_value("--debug 1")
     assert_equal "1", opt.arg_to_value("--debug=1")
     assert_equal nil, opt.arg_to_value("--debug")
@@ -169,8 +181,14 @@ class TestOptionFlag < Minitest::Test
   end
   
   def test_help_usage
-    opt = Miniparse::FlagOption.new spec:"--debug LEVEL" 
+    opt = Miniparse::FlagOption.new spec: "--debug LEVEL" 
     assert opt.help_usage.include? "--debug LEVEL" 
+  end
+ 
+  def test_help_desc
+    opt = Miniparse::FlagOption.new(spec: "--debug LEVEL", 
+        desc: "some", default: "other")
+    assert opt.help_desc =~ /some.+other/
   end
   
 end
