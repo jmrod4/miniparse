@@ -7,15 +7,11 @@ class InterfaceElement
   def self.valid_spec(spec)
     spec_to_name(spec) != nil
   end
-
+  
   # subclass need to overide 
   def self.spec_to_name(spec)
     raise NotImplementedError, 
         "#{self.class} cannot respond to '#{__method__}'"
-  end
-
-  def self.spec_pattern_to_name(spec, pattern)
-    (spec =~ pattern)  ?  $1.to_sym  :  nil
   end
 
   attr_reader :name, :desc
@@ -64,6 +60,12 @@ class InterfaceElement
 
 protected
 
+  def self.spec_pattern_to_name(spec, pattern)
+    (spec =~ pattern)  ?  $1.to_sym  :  nil
+  end
+
+private_class_method :spec_pattern_to_name
+
   # subclass hook for initializing
   def post_initialize(args)
     nil
@@ -87,7 +89,7 @@ protected
     @spec = args.fetch(:spec) 
     @desc = args[:desc] 
     @block = block
-    @name = self.class.spec_to_name(spec)
+    @name = self.class.send(:spec_to_name, spec)
     raise SyntaxError, "invalid specification '#{spec}'"    if name.nil?
     post_initialize(args)
   end
@@ -98,18 +100,15 @@ end
 
 class Command < InterfaceElement
 
-  def check(arg)
-    arg == name.to_s
-  end
-
-protected
-
   def self.spec_to_name(spec)
     spec_pattern_to_name(spec, /\A(\w[\w-]+)\z/)
   end
 
-end
+  def check(arg)
+    arg == name.to_s
+  end
 
+end
 
 
 # TODO FEATURE consider doing unambiguous matches for shortened options

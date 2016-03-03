@@ -8,11 +8,11 @@ class ElementStub < Miniparse::InterfaceElement
 end
 
 
-class TestElementInterface < Minitest::Test
+class TestElement < Minitest::Test
   
   def test_class_methods
     assert_equal :name,
-        Miniparse::InterfaceElement.spec_pattern_to_name("somenamein", /(name)/)  
+        Miniparse::InterfaceElement.send(:spec_pattern_to_name, "somenamein", /(name)/)  
   end
   
   def test_run_block

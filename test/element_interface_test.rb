@@ -6,7 +6,7 @@ module ElementInterface
   def test_element_interface
     assert @object.class.respond_to? :valid_spec
     assert @object.class.respond_to? :spec_to_name
-    assert @object.class.respond_to? :spec_pattern_to_name
+    assert @object.class.private_methods.include?(:spec_pattern_to_name)
     assert @object.respond_to? :name
     assert @object.respond_to? :run
     assert @object.respond_to? :check
@@ -49,7 +49,7 @@ class TestElementInterface < Minitest::Test
   
   def test_subclass_requirements
     assert_raises(NotImplementedError) {
-                  Miniparse::InterfaceElement.spec_to_name "some" }
+                 Miniparse::InterfaceElement.spec_to_name("some") }
     assert_raises(NotImplementedError) { @object.check "some" }
   end
         
@@ -119,7 +119,7 @@ class TestOptionInterface < Minitest::Test
   
   def test_subclass_requirements
     assert_raises(NotImplementedError) {
-        Miniparse::Option.spec_to_name "some" }
+        Miniparse::Option.spec_to_name("some") }
     assert_raises(NotImplementedError) {
         OptionStub.new(spec:"--some").arg_to_value "--some" }
   end
