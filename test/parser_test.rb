@@ -2,6 +2,33 @@ require 'test_helper'
 
 
 
+class TestParserInterface < Minitest::Test
+  
+  def setup
+    @object = Miniparse::Parser.new
+  end
+  
+  def test_parser_accessors
+    assert_respond_to @object, :current_command
+    assert_respond_to @object, :args
+    assert_respond_to @object, :command_args
+    assert_respond_to @object, :parsed_command
+  end  
+  
+  def test_parser_methods
+    assert_respond_to @object, :add_option
+    assert_respond_to @object, :add_command
+    assert_respond_to @object, :parse
+    assert_respond_to @object, :options
+    assert_respond_to @object, :command_options
+    assert_respond_to @object, :help_desc
+    assert_respond_to @object, :help_usage
+  end
+  
+end
+
+# FIXME streamline this tests a bit, consider spliting in several files
+
 class TestParserAddOption < Minitest::Test
 
   def setup
@@ -9,6 +36,8 @@ class TestParserAddOption < Minitest::Test
   end
 
   def test_nodesc
+    #Miniparse.set_control(rescue_argument_error: false)
+  
     assert_raises(ArgumentError) { @parser.add_option("--debug") }
   end
   
@@ -27,11 +56,15 @@ class TestParserAddOption < Minitest::Test
   end
 
   def test_not_negatable
+    Miniparse.set_control(rescue_argument_error: false)
     @parser.add_option("--debug", nil, negatable:false)
     assert_raises(ArgumentError) { @parser.parse ["--no-debug"] }
   end
   
   def test_duplicate_option
+    Miniparse.set_control(rescue_argument_error: false)
+    Miniparse.set_control(error_on_unrecognized: true)
+    
     @parser.add_option("--debug", nil, negatable: true)
     @parser.parse ["--no-debug"]
     
@@ -57,12 +90,15 @@ class TestParserParse < Minitest::Test
   end
 
   def test_no_arguments 
+    Miniparse.set_control(rescue_argument_error: false)
     assert_raises(ArgumentError, 
         "FEATURE parser doesn't default to ARGV"
         ) { @parser.parse }
   end
   
   def test_nothing
+    Miniparse.set_control(help_cmdline_empty: false)
+    
     assert_equal([],    @parser.parse([]), 
       "if nothing to do, do nothing 1")
     assert_equal([""],  @parser.parse([""]), 
@@ -94,6 +130,9 @@ class TestParserParseOptions < Minitest::Test
   end
 
   def test_bad_arg
+    Miniparse.set_control(error_on_unrecognized: true)
+    Miniparse.set_control(rescue_argument_error: false)
+  
     assert_raises(ArgumentError) { @parser.parse ["--other"] }
     assert_raises(ArgumentError) { @parser.parse ["--"] }
     assert_raises(ArgumentError) { @parser.parse ["---"] }
@@ -165,6 +204,7 @@ class TestParserParseCommands < Minitest::Test
   end
 
   def test_bad_arg
+
     k = 1
     @parser.add_command("list", nil) { k = 2 }
     k = 3
@@ -187,8 +227,6 @@ class TestParserParseCommands < Minitest::Test
   end
 
 end
-
-
 
 
 
@@ -235,6 +273,8 @@ class TestAddCommand < Minitest::Test
   end
 
   def test_nodesc
+    #Miniparse.set_control(rescue_argument_error: false)
+
     assert_raises(ArgumentError) { @parser.add_command("list") }
   end
 
@@ -406,6 +446,3 @@ class TestHelpText < Minitest::Test
   
   # FIXME add command help tests
 end
-
-
-

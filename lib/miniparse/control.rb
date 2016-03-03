@@ -21,7 +21,7 @@ ERR_ARGUMENT = 2
   
   # raises an ArgumentError if there are global args 
   # (after parsing options and commands)
-  raise_global_args: true,
+  raise_global_args: false,
 
   # formats help output with the width... controls
   formatted_help: true,
@@ -36,7 +36,7 @@ ERR_ARGUMENT = 2
   autonegatable: true,
   
   # uses short options (besides long ones) for all options
-  autoshortable: true,
+  autoshortable: false,
   }
 
 

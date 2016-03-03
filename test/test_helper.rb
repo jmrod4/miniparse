@@ -1,6 +1,9 @@
 require 'minitest/pride'
 require 'minitest/autorun'
 require 'miniparse'
+require 'element_module'
+require 'option_module'
+
 
 Miniparse.set_control(
   error_on_unrecognized: true, 
@@ -8,6 +11,7 @@ Miniparse.set_control(
   help_cmdline_empty: false,
   raise_global_args: false,
   )
+
 
 
 # FIXME integrate automatic tests for the examples
