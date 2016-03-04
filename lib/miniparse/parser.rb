@@ -15,9 +15,9 @@ class Parser
 
   def initialize
     @global_broker = OptionBroker.new
+    
     @commands = {}
     @command_brokers = {}
-    @current_command = nil
     
     add_option("--help", nil, negatable: false) do
       puts help_usage
@@ -124,7 +124,7 @@ class Parser
 
   # @return a usage message
   def help_usage
-    if Miniparse.control(:detailed_usage)
+    if ! Miniparse.control(:generic_usage)
       right_text = @global_broker.help_usage
     elsif commands.empty?
       right_text = "[options]"

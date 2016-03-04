@@ -9,7 +9,7 @@ class TestSwitchInterface < Minitest::Test
   include OptionRequeriments
 
   def setup
-    @object = Miniparse::SwitchOption.new spec:"--some"
+    @object = Miniparse::SwitchOption.new spec: "--some"
   end
 
 end
@@ -30,7 +30,7 @@ class TestSwitchOption < Minitest::Test
     assert_equal true, opt.arg_to_value("--debug")
     assert_equal false, opt.arg_to_value("--no-debug")
     assert_equal nil, opt.arg_to_value("debug")
-    opt = Miniparse::SwitchOption.new spec:"--debug", negatable: false
+    opt = Miniparse::SwitchOption.new spec: "--debug", negatable: false
     assert_equal true, opt.arg_to_value("--debug")
     assert_equal nil, opt.arg_to_value("--no-debug")
     assert_equal nil, opt.arg_to_value("debug")

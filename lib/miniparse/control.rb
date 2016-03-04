@@ -30,7 +30,7 @@ ERR_ARGUMENT = 2
   width_left: 18,
   
   # use a generic help usage msg or a specific one
-  detailed_usage: true,
+  generic_usage: true,
 
   # uses --no-... options for all options
   autonegatable: true,
