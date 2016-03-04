@@ -2,16 +2,14 @@ module Miniparse
 
 
 
-class InterfaceElement
+class Command
 
   def self.valid_spec(spec)
     spec_to_name(spec) != nil
   end
   
-  # subclass need to overide 
   def self.spec_to_name(spec)
-    raise NotImplementedError, 
-        "#{self.class} cannot respond to '#{__method__}'"
+    spec_pattern_to_name(spec, /\A(\w[\w-]+)\z/)
   end
 
   attr_reader :name, :desc
@@ -38,10 +36,8 @@ class InterfaceElement
   # @param arg is like an ARGV element
   # @return true if arg specifies this object
   def check(arg)
-    raise NotImplementedError, 
-        "#{self.class} cannot respond to '#{__method__}'"
+    arg == name.to_s
   end
-  
 
   # @return text of an option specification and description
   def help_desc
@@ -98,19 +94,6 @@ end
 
 
 
-class Command < InterfaceElement
-
-  def self.spec_to_name(spec)
-    spec_pattern_to_name(spec, /\A(\w[\w-]+)\z/)
-  end
-
-  def check(arg)
-    arg == name.to_s
-  end
-
-end
-
-
 # TODO FEATURE consider doing unambiguous matches for shortened options
 # TODO FEATURE consider the option default value setting the type
 class Option < Command
@@ -121,6 +104,10 @@ class Option < Command
     arg_to_value(arg) != nil
   end
 
+  def arg_to_value(arg)
+    raise NotImplementedError, "#{self.class} cannot respond to '#{__method__}'"
+  end
+
   def parse_value(arg)
     val = arg_to_value(arg)
     if val != nil
@@ -128,10 +115,6 @@ class Option < Command
       run(val)
     end
     val
-  end
-
-  def arg_to_value(arg)
-    raise NotImplementedError, "#{self.class} cannot respond to '#{__method__}'"
   end
 
   def help_usage

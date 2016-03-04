@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = %q{Miniparse is a easy of use yet flexible and powerful ruby library for parsing command-line options.}
 #  spec.description   = %q{TODO: Write a longer description or delete this line.}
-  spec.homepage      = "https://github.com/jmrod4/minparse"
+  spec.homepage      = "https://github.com/jmrod4/miniparse"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
@@ -29,5 +29,6 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler", "~> 1.11"
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "minitest", "~> 5.0"
+  #spec.add_development_dependency "minitest", "~> 5.0"
+  spec.add_development_dependency "rspec", "~> 3.0"
 end

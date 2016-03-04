@@ -8,7 +8,7 @@ Additionally the library is quite flexible and allows a lot of customization but
 
 ## How to use
 
-Please find below a short but meaningful example (you can get more examples at the [Github miniparse repository](https://github.com/jmrod4/minparse/tree/master/examples)).
+Please find below a short but meaningful example (you can get more examples at the [Github miniparse repository](https://github.com/jmrod4/miniparse/tree/master/examples)).
 
 Let's try putting the following code in `yourprogram.rb`
 
@@ -50,9 +50,9 @@ You can install it as an standard ruby gem with
 
     $ gem install miniparse
     
-then to use it add to the top of your ruby source file
+then to use you can require it adding the following to the top of your ruby source file
 
-    require 'minparse'
+    require 'miniparse'
     
 ## Contributing
 
