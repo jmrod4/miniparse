@@ -6,7 +6,7 @@ require 'option_module'
 
 
 Miniparse.set_control(
-  error_on_unrecognized: true, 
+  raise_on_unrecognized: true, 
   rescue_argument_error: false,
   help_cmdline_empty: false,
   raise_global_args: false,
@@ -22,7 +22,7 @@ end
 
 
 
-class ElementStub < Miniparse::InterfaceElement
+class ElementStub < Miniparse::Command
   def self.spec_to_name(spec)
     :stub
   end

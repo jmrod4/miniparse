@@ -10,7 +10,7 @@ ERR_ARGUMENT = 2
 @@behaviour_controls = {
   # gives an error if there is an unrecognized option either short or long
   # (if not then passes them as arguments) 
-  error_on_unrecognized: true, 
+  raise_on_unrecognized: true, 
   
   # intercepts .parse ArgumentError (i.e. the command line user introduced 
   # wrong or invalid options) and exits with a helpful msg  

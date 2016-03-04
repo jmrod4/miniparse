@@ -63,7 +63,7 @@ class TestParserAddOption < Minitest::Test
   
   def test_duplicate_option
     Miniparse.set_control(rescue_argument_error: false)
-    Miniparse.set_control(error_on_unrecognized: true)
+    Miniparse.set_control(raise_on_unrecognized: true)
     
     @parser.add_option("--debug", nil, negatable: true)
     @parser.parse ["--no-debug"]
@@ -130,7 +130,7 @@ class TestParserParseOptions < Minitest::Test
   end
 
   def test_bad_arg
-    Miniparse.set_control(error_on_unrecognized: true)
+    Miniparse.set_control(raise_on_unrecognized: true)
     Miniparse.set_control(rescue_argument_error: false)
   
     assert_raises(ArgumentError) { @parser.parse ["--other"] }

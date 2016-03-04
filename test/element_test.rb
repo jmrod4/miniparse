@@ -9,13 +9,6 @@ class TestElementInterface < Minitest::Test
     @object = ElementStub.new(spec: "some")
   end
   
-  def test_subclass_override
-    assert_raises(NotImplementedError) {
-        Miniparse::InterfaceElement.spec_to_name("some") }
-    assert_raises(NotImplementedError) { 
-        @object.check "some" }
-  end
-
 end
 
 
@@ -26,8 +19,8 @@ class TestElement < Minitest::Test
   end
  
   def test_initialize
-    assert_raises(KeyError) { Miniparse::InterfaceElement.new({}) }
-    assert_raises(KeyError) { Miniparse::InterfaceElement.new desc: "some desc" }
+    assert_raises(KeyError) { Miniparse::Command.new({}) }
+    assert_raises(KeyError) { Miniparse::Command.new desc: "some desc" }
   end
   
   def test_run_block

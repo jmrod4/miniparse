@@ -5,7 +5,7 @@ require "miniparse/util_word_wrap"
 require "miniparse/util_debug"
 
 require "miniparse/control"
-require "miniparse/element"
+require "miniparse/command"
 require "miniparse/option_broker"
 require "miniparse/parser"
 

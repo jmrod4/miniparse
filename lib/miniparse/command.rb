@@ -4,13 +4,10 @@ module Miniparse
 
 class Command
 
-  def self.valid_spec(spec)
-    spec_to_name(spec) != nil
-  end
-  
   def self.spec_to_name(spec)
-    spec_pattern_to_name(spec, /\A(\w[\w-]+)\z/)
+    spec_pattern_to_name(spec, /\A(\w[\w-]*)\z/)
   end
+  def self.valid_spec(*args); spec_to_name(*args); end
 
   attr_reader :name, :desc
 
@@ -36,7 +33,7 @@ class Command
   # @param arg is like an ARGV element
   # @return true if arg specifies this object
   def check(arg)
-    arg == name.to_s
+    arg.to_s == name.to_s
   end
 
   # @return text of an option specification and description

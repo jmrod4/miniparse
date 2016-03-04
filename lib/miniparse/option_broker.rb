@@ -41,10 +41,10 @@ class OptionBroker
 	      val = opt.parse_value(new_arg)
         end
 	    if val.nil?
-          raise ArgumentError, "#{opt.class} invalid invocation format '#{arg}'"
+        raise ArgumentError, "#{opt.class} invalid invocation format '#{arg}'"
 	    end
       else
-        if Miniparse.control(:error_on_unrecognized) && (arg[0] == '-')
+        if Miniparse.control(:raise_on_unrecognized) && (arg[0] == '-')
           raise ArgumentError, "unrecognized option '#{arg}'"
         end
         rest_argv << arg
