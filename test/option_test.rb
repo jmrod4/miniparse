@@ -14,9 +14,9 @@ class TestOptionInterface < Minitest::Test
   end
   
   def test_subclass_requirements
-    assert_raises(NotImplementedError) {
-        Miniparse::Option.spec_to_name("some") }
-    assert_raises(NotImplementedError) { @obj.arg_to_value "--some" }
+    #assert_raises(NotImplementedError) {
+    #    Miniparse::Option.spec_to_name("some") }
+    #assert_raises(NotImplementedError) { @obj.arg_to_value "--some" }
     assert_raises(NotImplementedError) { @obj.help_usage }
   end
   

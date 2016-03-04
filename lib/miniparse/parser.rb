@@ -1,6 +1,8 @@
 module Miniparse
 
+# TODO create external documentation, maybe auto
 
+# TODO this class maybe does too much, separate a command broker or something similar
 
 class Parser
 

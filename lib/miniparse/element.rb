@@ -113,7 +113,7 @@ end
 
 # TODO FEATURE consider doing unambiguous matches for shortened options
 # TODO FEATURE consider the option default value setting the type
-class Option < InterfaceElement
+class Option < Command
   
   attr_reader :value, :shortable
 
