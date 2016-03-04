@@ -12,7 +12,7 @@ class TestParserInterface < Minitest::Test
     assert_respond_to @object, :current_command
     assert_respond_to @object, :args
     assert_respond_to @object, :command_args
-    assert_respond_to @object, :parsed_command
+    assert_respond_to @object, :command
   end  
   
   def test_parser_methods
@@ -154,7 +154,7 @@ class TestParserParseOptions < Minitest::Test
     assert @parser.options[:debug]
 
     refute @parser.current_command
-    refute @parser.parsed_command
+    refute @parser.command
 
     @parser.parse []
     refute @parser.options[:debug].nil?
@@ -175,7 +175,7 @@ class TestParserParseOptions < Minitest::Test
     assert_equal "1", @parser.options[:verbose]
 
     refute @parser.current_command
-    refute @parser.parsed_command
+    refute @parser.command
     
     @parser.parse []
     refute @parser.options[:verbose].nil?
@@ -329,12 +329,12 @@ class TestParserCommandParsed < Minitest::Test
   
   def test_no_command
     @parser.parse "a b c".split
-    assert_nil @parser.parsed_command
+    assert_nil @parser.command
   end
   
   def test_command
     @parser.parse "a b list c d".split
-    assert_equal :list, @parser.parsed_command
+    assert_equal :list, @parser.command
   end
 
 end

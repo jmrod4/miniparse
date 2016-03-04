@@ -7,6 +7,7 @@ require "miniparse/util_debug"
 require "miniparse/control"
 require "miniparse/command"
 require "miniparse/option_broker"
+require "miniparse/commander"
 require "miniparse/parser"
 
 

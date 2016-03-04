@@ -9,11 +9,10 @@ describe Miniparse::Parser do
   it 'has a public interface' do
     expect(@parser.respond_to?(:args)).to be_truthy
     expect(@parser.respond_to?(:options)).to be_truthy
-    expect(@parser.respond_to?(:current_command)).to be_truthy
+    expect(@parser.respond_to?(:command)).to be_truthy
     expect(@parser.respond_to?(:command_args)).to be_truthy
     expect(@parser.respond_to?(:command_options)).to be_truthy
-    expect(@parser.respond_to?(:parsed_command)).to be_truthy
-    expect(@parser.respond_to?(:command_options)).to be_truthy
+    expect(@parser.respond_to?(:current_command)).to be_truthy
     expect(@parser.respond_to?(:add_option)).to be_truthy
     expect(@parser.respond_to?(:add_command)).to be_truthy
     expect(@parser.respond_to?(:parse)).to be_truthy
