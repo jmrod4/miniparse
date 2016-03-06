@@ -53,7 +53,7 @@ describe Miniparse::Command do
   
   include_examples :commandable
   
-  it "'s class can convert from specification to name" do
+  it "its class can convert from specification to name" do
     expect(@obj.class.spec_to_name("other")).to be :other
     expect(@obj.class.spec_to_name("--other")).to be nil
     expect(@obj.class.spec_to_name("--other VALUE")).to be nil
@@ -67,7 +67,7 @@ describe Miniparse::Command do
     expect(@obj.class.spec_to_name("")).to be nil
   end
   
-  it "'s class can validate a specification" do
+  it "its class can validate a specification" do
     expect(@obj.class.valid_spec("other")).to be_truthy
     expect(@obj.class.valid_spec(:other)).to be_truthy
     expect(@obj.class.valid_spec("o")).to be_truthy
@@ -134,7 +134,7 @@ describe Miniparse::SwitchOption do
   include_examples :commandable
   include_examples :optionable
 
-  it "'s class can convert an specification to a name" do
+  it "its class can convert an specification to a name" do
     expect(@obj.class.spec_to_name("other")).to be nil
     expect(@obj.class.spec_to_name("--other")).to be :other
     expect(@obj.class.spec_to_name("--other VALUE")).to be nil
@@ -181,7 +181,7 @@ describe Miniparse::FlagOption do
   include_examples :commandable
   include_examples :optionable
 
-  it "'s class can convert an specification to a name" do
+  it "its class can convert an specification to a name" do
     expect(@obj.class.spec_to_name("other")).to be nil
     expect(@obj.class.spec_to_name("--other")).to be nil
     expect(@obj.class.spec_to_name("--other VALUE")).to be :other

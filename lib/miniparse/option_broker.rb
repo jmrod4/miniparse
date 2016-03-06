@@ -6,9 +6,12 @@ class OptionBroker
 
   attr_reader :parsed_values
 
-  def initialize
+  def initialize(&block)
     @parsed_values = {}
     @added_options = {}
+    if block
+      add_option(spec: "--help", negatable: false, &block) 
+    end
   end
 
   def add_option(args, &block)

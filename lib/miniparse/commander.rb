@@ -8,10 +8,14 @@ class Commander
 
   attr_reader :current_command, :parsed_command, :parsed_args
   
-  def parsed_values; brokers[parsed_command].parsed_values  if parsed_command; end
+  def parsed_values
+    brokers[parsed_command].parsed_values  if parsed_command
+  end
   
   # @return current command broker or nil
-  def current_broker; brokers[current_command]; end
+  def current_broker
+    brokers[current_command]
+  end
 
   def initialize
     @commands = {}
@@ -33,19 +37,22 @@ class Commander
     # and the user isn't trying to add his own help command
     add_help_command    if name != :help && commands.empty?
     cmd = Command.new(args, &block)
-    # FEATURE if a command already exists it gets overwritten (and its options lost)
+    # FEATURE if a command already exists it gets quietly overwritten (and its options lost)
     @commands[name] = cmd
-    @brokers[name] = OptionBroker.new
+    @brokers[name] = OptionBroker.new do
+      puts help_command_text(name)
+      exit ERR_HELP_REQ
+    end
     @current_command = name    unless args[:no_options]
     cmd
   end  
 
-  # @param argv is like ARGV
-  # @return an array of argv parts: [global_argv, command_arg, command_argv] 
+  # @param argv is ARGV like
+  # @return an array of argv parts: [global_argv, command_name, command_argv] 
   def split_argv(argv)
     index = index_command(argv)
     if index
-      global_argv = (index == 0)? [] : argv[0..index-1]
+      global_argv = (index == 0)  ?  []  :  argv[0..index-1]
       command_argv = argv[index+1..-1]
       [global_argv, Command.spec_to_name(argv[index]), command_argv]
     else  
@@ -61,57 +68,57 @@ class Commander
     parsed_args
   end
   
-#  def help_usage
-#  end
-
+  # @return the command general help for the commands in the commander 
   def help_desc
     text = ""
     if current_command
-      nodesc = []
-      help_desc = commands.sort.collect do |name, cmd| 
+      names_wo_desc = []
+      desc_texts = commands.sort.collect do |name, cmd| 
         if cmd.desc
           cmd.help_desc
         else
-          nodesc << name
+          names_wo_desc << name
           nil
         end
       end
-      text_desc = help_desc.compact.join("\n")
-      unless text_desc.empty?
+      unless desc_texts.compact!.empty?
         text += "\nCommands:\n"
-        text += text_desc 
+        text += desc_texts.join("\n") 
       end
-      text_nodesc = nodesc.join(", ")
-      unless text_nodesc.empty?
+      unless names_wo_desc.empty?
         text += "\nMore commands: \n"
         text += ' '*Miniparse.control(:width_indent)
-        text += text_nodesc
+        text += names_wo_desc.join(", ")
       end
     end
     text
- end
-  
+  end
   
 protected 
 
   attr_reader :commands, :brokers 
 
+  def help_command_text(name)
+    header = "Command #{name}:  #{commands[name].desc}"
+    text = "\n"
+    text += Miniparse.word_wrap(header, Miniparse.control(:width_display))
+    text += "\n\n"
+    text += Miniparse.help_usage_format(
+        "#{name} #{brokers[name].help_usage}")
+    if (options_desc = brokers[name].help_desc).size > 0
+      text += "\n\nOptions:\n"
+      text += options_desc
+    end
+    text += "\n\n"
+    text
+  end
+  
   def add_help_command
     add_command(spec: :help, desc: nil, no_options: true) do |args|
       index = index_command(args)
       if index
-        cmd = args[index].to_sym
-        header = "Command #{cmd}:  #{commands[cmd].desc}"
-        text = "\n"
-        text += Miniparse.word_wrap(header, Miniparse.control(:width_display))
-        text += "\n\n"
-        text += Miniparse.help_usage_format(
-                    "#{cmd} #{brokers[cmd].help_usage}")
-        if (opt_desc = brokers[cmd].help_desc).size > 0
-          text += "\n\nOptions:\n"
-          text += opt_desc
-        end
-        puts text + "\n\n"
+        name = args[index].to_sym
+        puts help_command_text(name)
         exit ERR_HELP_REQ
       else
         raise ArgumentError, "no command specified, use 'help <command>' to get help"

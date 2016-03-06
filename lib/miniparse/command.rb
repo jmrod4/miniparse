@@ -74,18 +74,11 @@ private_class_method :spec_pattern_to_name
   attr_reader :spec, :block 
 
   # subclass hook for initializing
-  def post_initialize(args)
-    nil
-  end 
+  def post_initialize(args); nil; end 
      
-  # subclass hook for changing description
-  def add_desc
-    ""
-  end
-  
-  def add_spec
-    ""
-  end
+  # subclass hook for changing description/specification
+  def add_desc; ""; end
+  def add_spec; ""; end
 
 end
 

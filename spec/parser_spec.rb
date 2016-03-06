@@ -1,24 +1,261 @@
 require 'spec_helper'
 
+# FIXME add more examples
+
+
 describe Miniparse::Parser do
 
   before :each do
-    @parser = Miniparse::Parser.new
+    expect(@parser = Miniparse::Parser.new).not_to be nil
   end
 
   it 'has a public interface' do
-    expect(@parser.respond_to?(:args)).to be_truthy
-    expect(@parser.respond_to?(:options)).to be_truthy
-    expect(@parser.respond_to?(:command)).to be_truthy
-    expect(@parser.respond_to?(:command_args)).to be_truthy
-    expect(@parser.respond_to?(:command_options)).to be_truthy
-    expect(@parser.respond_to?(:current_command)).to be_truthy
-    expect(@parser.respond_to?(:add_option)).to be_truthy
-    expect(@parser.respond_to?(:add_command)).to be_truthy
-    expect(@parser.respond_to?(:parse)).to be_truthy
-    expect(@parser.respond_to?(:help_desc)).to be_truthy
-    expect(@parser.respond_to?(:help_usage)).to be_truthy
+    expect(@parser).to respond_to(:args)
+    expect(@parser).to respond_to(:options)
+    expect(@parser).to respond_to(:command)
+    expect(@parser).to respond_to(:command_args)
+    expect(@parser).to respond_to(:command_options)
+    expect(@parser).to respond_to(:current_command)
+    expect(@parser).to respond_to(:add_option)
+    expect(@parser).to respond_to(:add_command)
+    expect(@parser).to respond_to(:parse)
+    expect(@parser).to respond_to(:help_desc)
+    expect(@parser).to respond_to(:help_usage)
+  end
+  
+  describe "#add_option" do
+    
+    it 'option needs a specification and a description' do
+      expect { @parser.add_option() 
+        }.to raise_error ArgumentError
+      expect { @parser.add_option("--debug") 
+        }.to raise_error ArgumentError
+      expect(  @parser.add_option("--debug", "crush bugs" ) 
+        ).not_to be nil
+    end
+    
+    it 'but a description can be nil' do
+      expect(  @parser.add_option("--debug", nil) 
+        ).not_to be nil
+    end
+    
+    it 'can add switch options' do
+      expect(@parser.add_option("--debug", nil)
+        ).not_to be nil
+    end
+
+    it 'can add flag options' do
+      expect(@parser.add_option("--verbose LEVEL", nil)
+        ).not_to be nil
+      expect(@parser.add_option("--debug=LEVEL", nil)
+        ).not_to be nil
+    end
+
+    it 'can add options with blocks' do
+      expect(@parser.add_option("--debug", nil) { |value| puts value }
+        ).not_to be nil
+    end
+
+    it 'options can have a default' do
+      expect(@parser.add_option("--debug", nil, default: false)
+        ).not_to be nil
+      expect(@parser.add_option("--verbose=LEVEL", nil, default: "1")
+        ).not_to be nil
+    end
+    
+    it 'options can be shortable' do
+      expect(@parser.add_option("--debug", nil, shortable: true)
+        ).not_to be nil
+      expect(@parser.add_option("--verbose LEVEL", nil, shortable: true)
+        ).not_to be nil
+    end
+
+    it 'switch options can be negatable' do
+      expect(@parser.add_option("--debug", nil, negatable: true)
+        ).not_to be nil
+    end
+    
+  end  
+  
+  describe "#add_command" do
+
+    it 'needs a name and a description' do
+     expect { @parser.add_command() 
+        }.to raise_error ArgumentError
+      expect { @parser.add_command("kill") 
+        }.to raise_error ArgumentError
+      expect(  @parser.add_command("kill", "crush tasks" ) 
+        ).not_to be nil
+    end
+
+    it 'but a description can be nil' do
+      expect(  @parser.add_command("kill", nil) 
+        ).not_to be nil
+    end
+
+    it 'name can be a symbol or a string' do
+      expect(  @parser.add_command(:kill, nil) 
+        ).not_to be nil
+      expect(  @parser.add_command("save", nil) 
+        ).not_to be nil
+    end
+    
+    it 'can add commands with blocks' do
+      expect(@parser.add_command(:kill, nil) { |args| puts args }
+        ).not_to be nil
+    end
+    
+  end 
+  
+  describe "#help_usage" do
+    it 'knows msg for help on usage'
+  end
+  
+  describe "#help_desc" do
+    it 'knows msg for descriptive help'
+    it "if option description is nil then option doesn't appear in the descriptive help"
+    it "if command description is nil then it has just its name in the 'More commands' list"
+  end
+ 
+  context "with multiple options and commands, no defaults" do
+    before :each do
+      @parser.add_option "--hide", nil,
+        shortable: true, negatable: false
+      @parser.add_option "--debug", "find the bugs", 
+        shortable: false, negatable: false
+      @parser.add_option "--verbose", "talk to much", 
+        shortable: true, negatable: true
+      @parser.add_option "--read FILE", "where to read",
+        shortable: true      
+      
+      expect(@parser.current_command).to be nil
+
+      @parser.add_command :list, "output many lines"  
+      @parser.add_option "--sort", "in an ordered way" 
+      expect(@parser.current_command).to be :list
+
+      @parser.add_command "kill", nil
+      expect(@parser.current_command).to be :kill
+   
+      expect(@parser.options).to eq({})
+      expect(@parser.command).to be nil
+      expect(@parser.command_args).to be nil
+      expect(@parser.command_options).to be nil
+    end
+
+    describe "#parse" do    
+      it "can parse switch options" do
+        expect(@parser.parse(%w(--hide --debug --verbose))).to eq []
+        expect(@parser.options[:hide]).to be true
+        expect(@parser.options[:debug]).to be true
+        expect(@parser.options[:verbose]).to be true
+      end
+      
+      it "can parse negated switch options" do
+        expect(@parser.parse(%w(--no-verbose))).to eq []
+        expect(@parser.options[:verbose]).to be false
+      end
+      
+      it "can parse shorted switch options" do
+        expect(@parser.parse(%w(-h -v))).to eq []
+        expect(@parser.options[:hide]).to be true
+        expect(@parser.options[:verbose]).to be true
+      end
+
+      it "can parse grouped shorted switch options" do
+        expect(@parser.parse(%w(-hv))).to eq []
+        expect(@parser.options[:hide]).to be true
+        expect(@parser.options[:verbose]).to be true
+      end
+      
+      it "can parse flag options" do
+        expect(@parser.parse(%w(--read otherfile.txt))).to eq []
+        expect(@parser.options[:read]).to eq "otherfile.txt"
+      end
+
+      it "can parse shorted flag options" do
+        expect(@parser.parse(%w(-r otherfile.txt))).to eq []
+        expect(@parser.options[:read]).to eq "otherfile.txt"
+      end
+      
+      it "can parse commands" do
+        expect(@parser.parse(%w(list))).to eq []
+        expect(@parser.command).to be :list
+        expect(@parser.command_args).to eq []
+        expect(@parser.command_options).to eq({})
+      end
+
+      it "can parse commands with arguments" do
+        expect(@parser.parse(%w(kill something))).to eq []
+        expect(@parser.command).to be :kill
+        expect(@parser.command_args).to eq ["something"]
+        expect(@parser.command_options).to eq({})
+      end
+
+      it "can parse commands with options" do
+        expect(@parser.parse(%w(list --sort))).to eq []
+        expect(@parser.command).to be :list
+        expect(@parser.command_args).to eq []
+        expect(@parser.command_options[:sort]).to be true
+      end
+      
+      it "can parse only one command at a time" do
+        expect(@parser.parse(%w(list kill))).to eq []
+        expect(@parser.command).to be :list
+        expect(@parser.command_args).to eq ["kill"]
+      end
+
+      it "executes the blocks added to options and commands"
+    end
+
+  end
+  
+  context "with default values" do 
+    before :each do
+      @parser.add_option "--read FILE", "where to read",
+        default: "myfile.txt"
+      @parser.add_option "--debug", nil,
+        default: false, negatable: true
+      @parser.add_option "--normal", nil,
+        default: true, negatable: true
+
+      expect(@parser.current_command).to be nil
+      # TODO consider if correct options won't change until parsed
+      expect(@parser.options).to eq({})
+      expect(@parser.command).to be nil
+      expect(@parser.command_args).to be nil
+      expect(@parser.command_options).to be nil
+    end
+
+    describe '#parse' do
+      
+      it "won't change values from default if the option is not specifed" do
+        expect(@parser.parse(%w(other))).to eq ["other"]      
+        expect(@parser.options[:read]).to eq "myfile.txt"
+        expect(@parser.options[:debug]).to be false
+      end
+      
+      it "will change values from default to the specified value if the option is specifed" do
+        expect(@parser.parse(%w(--debug --read otherfile.txt))).to eq []      
+        expect(@parser.options[:read]).to eq "otherfile.txt"
+        expect(@parser.options[:debug]).to be true
+      end
+      
+      it "a switch option will always parse to true, no matter the default value" do
+        expect(@parser.parse(%w(--normal --debug))).to eq []      
+        expect(@parser.options[:normal]).to be true
+        expect(@parser.options[:debug]).to be true
+      end
+
+      it "a negated switch option will always parse to false, no matter the default value" do
+        expect(@parser.parse(%w(--no-normal --no-debug))).to eq []      
+        expect(@parser.options[:normal]).to be false
+        expect(@parser.options[:debug]).to be false
+      end
+      
+    end
+    
   end
 
-  # FIXME add more concrete examples
+
 end

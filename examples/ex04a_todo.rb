@@ -24,7 +24,7 @@ parser.parse ARGV
 puts "args     #{parser.args.inspect}"
 puts "options  #{parser.options.inspect}"
 # for commands
-puts "parsed command  #{parser.parsed_command.inspect}"
+puts "parsed command  #{parser.command.inspect}"
 puts "command args    #{parser.command_args.inspect}"
 puts "command options #{parser.command_options.inspect}"
 

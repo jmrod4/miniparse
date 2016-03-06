@@ -20,15 +20,12 @@ class Parser
 
   
   def initialize
-    @global_broker = OptionBroker.new
-    @commander = Commander.new
-    
-    add_option("--help", nil, negatable: false) do
+    @global_broker = OptionBroker.new do
       puts help_usage
       puts help_desc
       exit ERR_HELP_REQ
     end
-    
+    @commander = Commander.new       
   end
 
   # @param spec is the option specification, similar to the option invocation 
@@ -37,7 +34,8 @@ class Parser
   # @param desc is a short description of the option
   # 
   # @param opts are the options to apply to the option
-  # :negatable (for switches)
+  # :default
+  # :negatable (used only for switches)
   # :shortable
   def add_option(spec, desc, opts={}, &block)
     args = opts.merge(spec: spec, desc: desc)
@@ -106,7 +104,6 @@ class Parser
     Miniparse.help_usage_format(right_text)
   end
 
-
 protected
 
   attr_reader :commander, :global_broker
@@ -129,9 +126,9 @@ protected
       exit ERR_ARGUMENT
     end
   end
-  
-  
+    
 end
+
 
 
 end
