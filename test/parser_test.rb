@@ -399,9 +399,9 @@ end
 
 
 
-module HelpUsageGeneric
+module HelpUsageDetailed
   def setup
-    Miniparse.set_control(generic_usage: false)
+    Miniparse.set_control(detailed_usage: true)
     @parser = Miniparse::Parser.new
     @parser.add_option("--debug", "activate debug", shortable: true)
     @parser.add_option("--verbose LEVEL", nil)
@@ -412,7 +412,7 @@ end
 
 class TestHelpUsage < Minitest::Test
 
-  include HelpUsageGeneric
+  include HelpUsageDetailed
   
   def test_negatable
     @parser.add_option("--sort", nil, negatable:true)
@@ -434,7 +434,7 @@ end
 
 class TestHelpText < Minitest::Test
 
-  include HelpUsageGeneric
+  include HelpUsageDetailed
   
   def test_desc
     help = @parser.help_desc

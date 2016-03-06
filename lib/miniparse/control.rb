@@ -29,8 +29,8 @@ ERR_ARGUMENT = 2
   width_indent: 3,
   width_left: 18,
   
-  # use a generic help usage msg or a specific one
-  generic_usage: true,
+  # use a detailed options help usage msg or a generic one
+  detailed_usage: false,
 
   # uses --no-... options for all options
   autonegatable: true,

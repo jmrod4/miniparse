@@ -179,7 +179,8 @@ class FlagOption < Option
   # @param arg is like an ARGV element
   # @return true if arg specifies this option
   def check(arg)
-     super(arg) || (arg =~ /\A--#{name}\z/)
+     super(arg) || (arg =~ /\A--#{name}\z/) ||
+      (shortable && (arg =~ /\A-#{name.to_s[0]}\z/))
   end
 
   def arg_to_value(arg)
