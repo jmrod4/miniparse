@@ -101,7 +101,7 @@ protected
   def help_command_text(name)
     header = "Command #{name}:  #{commands[name].desc}"
     text = "\n"
-    text += Miniparse.word_wrap(header, Miniparse.control(:width_display))
+    text += WordWrap.word_wrap(header, Miniparse.control(:width_display))
     text += "\n\n"
     text += Miniparse.help_usage_format(
         "#{name} #{brokers[name].help_usage}")

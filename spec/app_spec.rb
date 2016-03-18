@@ -1,8 +1,9 @@
 require 'spec_helper'
+require 'miniparse/app'
 
 
 
-describe Miniparse do
+describe App do
   it 'does something useful' do
     pending "TODO"
     expect(false).to eq(true)

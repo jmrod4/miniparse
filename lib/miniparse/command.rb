@@ -49,7 +49,7 @@ class Command
                   Miniparse.control(:width_left)
 
     if Miniparse.control(:formatted_help)
-      lines = Miniparse.two_cols_word_wrap_lines(
+      lines = WordWrap.two_cols_word_wrap_lines(
               spec.to_s + add_spec, separator, 
               desc + add_desc,
               width_left, width_right)
@@ -179,7 +179,8 @@ class FlagOption < Option
   # @param arg is like an ARGV element
   # @return true if arg specifies this option
   def check(arg)
-     super(arg) || (arg =~ /\A--#{name}\z/)
+     super(arg) || (arg =~ /\A--#{name}\z/) ||
+      (shortable && (arg =~ /\A-#{name.to_s[0]}\z/))
   end
 
   def arg_to_value(arg)

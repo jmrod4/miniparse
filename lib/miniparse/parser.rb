@@ -90,7 +90,7 @@ class Parser
   # @return a usage message
   def help_usage
     #FIXME
-    if ! Miniparse.control(:generic_usage)
+    if Miniparse.control(:detailed_usage)
       right_text = @global_broker.help_usage
     elsif current_command
       right_text = "[global_options]"   

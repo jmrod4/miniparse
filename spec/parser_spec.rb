@@ -3,6 +3,9 @@ require 'spec_helper'
 # FIXME add more examples
 
 
+
+
+
 describe Miniparse::Parser do
 
   before :each do
@@ -80,7 +83,7 @@ describe Miniparse::Parser do
   describe "#add_command" do
 
     it 'needs a name and a description' do
-     expect { @parser.add_command() 
+      expect { @parser.add_command() 
         }.to raise_error ArgumentError
       expect { @parser.add_command("kill") 
         }.to raise_error ArgumentError
@@ -108,13 +111,44 @@ describe Miniparse::Parser do
   end 
   
   describe "#help_usage" do
-    it 'knows msg for help on usage'
+    it 'knows msg for help on usage including options but no commands' do
+      Helper.push_control(:detailed_usage, true)
+      @parser.add_option("--sort", "order please")
+      @parser.add_command("list", "many lines")
+      help = @parser.help_usage
+      expect(help).to match /usage.+sort/m
+      expect(help).not_to match /list/m
+      Helper.pop_control
+    end
   end
   
   describe "#help_desc" do
-    it 'knows msg for descriptive help'
-    it "if option description is nil then option doesn't appear in the descriptive help"
-    it "if command description is nil then it has just its name in the 'More commands' list"
+  
+    it 'knows msg for descriptive help' do
+      @parser.add_option("--sort", "order please")
+      @parser.add_command("debug", "crush bugs")
+      help = @parser.help_desc
+      expect(help).to match /--sort.+order.+please/m
+      expect(help).to match /debug.+crush.+bugs/m
+    end
+  
+    it "if option description is nil then option doesn't appear in the descriptive help" do
+      @parser.add_option("--debug", nil)
+      @parser.add_option("--sort", "order please")
+      help = @parser.help_desc
+      expect(help).not_to match /debug/m
+      expect(help).to match /sort.+please/m
+    end
+
+    it "if command description is nil then it has just its name in the 'More commands' list" do
+      @parser.add_command("list", nil)
+      @parser.add_command("debug", "crush bugs")
+      help = @parser.help_desc
+      expect(help).to match /More commands.+list/m
+      expect(help).not_to match /More commands.+debug/m
+      expect(help).to match /debug.+crush/m
+    end
+    
   end
  
   context "with multiple options and commands, no defaults" do
@@ -163,6 +197,7 @@ describe Miniparse::Parser do
       end
 
       it "can parse grouped shorted switch options" do
+        pending "NEW FEATURE"
         expect(@parser.parse(%w(-hv))).to eq []
         expect(@parser.options[:hide]).to be true
         expect(@parser.options[:verbose]).to be true
@@ -205,7 +240,31 @@ describe Miniparse::Parser do
         expect(@parser.command_args).to eq ["kill"]
       end
 
-      it "executes the blocks added to options and commands"
+      it "executes the blocks added to options" do
+        parser = Miniparse::Parser.new
+        result = nil
+        parser.add_option("--active", nil, negatable: true) do |value| 
+          result = value 
+        end
+        expect(result).to be nil
+        expect(parser.parse(%w(--active))).to eq []
+        expect(result).to be true
+        expect(parser.parse(%w(--no-active))).to eq []
+        expect(result).to be false
+      end
+      
+      it "executes the blocks added to commands" do
+        result = nil
+        @parser.add_command(:active, nil) do |args| 
+          result = args
+        end
+        expect(result).to be nil
+        expect(@parser.parse(%w(active a b))).to eq []
+        expect(result).to eq %w(a b)
+        expect(@parser.parse(%w(active))).to eq []
+        expect(result).to eq []
+      end
+      
     end
 
   end
@@ -220,7 +279,7 @@ describe Miniparse::Parser do
         default: true, negatable: true
 
       expect(@parser.current_command).to be nil
-      # TODO consider if correct options won't change until parsed
+      # TODO consider if it is correct that options won't reflect the defaults until parsed
       expect(@parser.options).to eq({})
       expect(@parser.command).to be nil
       expect(@parser.command_args).to be nil
