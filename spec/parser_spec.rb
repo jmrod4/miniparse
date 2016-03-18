@@ -4,11 +4,10 @@ require 'spec_helper'
 
 
 
-
-
 describe Miniparse::Parser do
 
   before :each do
+    Miniparse.reset_controls
     expect(@parser = Miniparse::Parser.new).not_to be nil
   end
 
@@ -72,6 +71,13 @@ describe Miniparse::Parser do
       expect(@parser.add_option("--verbose LEVEL", nil, shortable: true)
         ).not_to be nil
     end
+    
+    it 'raises an error if added ambiguous (conflicting) shortable options' do
+      expect(@parser.add_option("--debug", nil, shortable: true)
+        ).not_to be nil
+      expect { @parser.add_option("--draw", nil, shortable: true)
+        }.to raise_error SyntaxError
+    end
 
     it 'switch options can be negatable' do
       expect(@parser.add_option("--debug", nil, negatable: true)
@@ -112,13 +118,12 @@ describe Miniparse::Parser do
   
   describe "#help_usage" do
     it 'knows msg for help on usage including options but no commands' do
-      Helper.push_control(:detailed_usage, true)
+      Miniparse.set_control(detailed_usage: true)
       @parser.add_option("--sort", "order please")
       @parser.add_command("list", "many lines")
       help = @parser.help_usage
       expect(help).to match /usage.+sort/m
       expect(help).not_to match /list/m
-      Helper.pop_control
     end
   end
   
@@ -198,7 +203,7 @@ describe Miniparse::Parser do
 
       it "can parse grouped shorted switch options" do
         pending "NEW FEATURE"
-        expect(@parser.parse(%w(-hv))).to eq []
+        expect { @parser.parse(%w(-hv)) }.not_to raise_error
         expect(@parser.options[:hide]).to be true
         expect(@parser.options[:verbose]).to be true
       end
