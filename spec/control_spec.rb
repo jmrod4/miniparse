@@ -3,6 +3,9 @@ require 'spec_helper'
 
 
 describe Miniparse do
+  before :each do
+    Miniparse.reset_controls
+  end
 
   it 'has global controls' do
     expect( Miniparse.control :raise_on_unrecognized ).not_to be nil

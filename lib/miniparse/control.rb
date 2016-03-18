@@ -1,8 +1,7 @@
 module Miniparse
 
 
-
-@behaviour_controls = {
+DEFAULT_CONTROLS = {
   # gives an error if there is an unrecognized option either short or long
   # (if not then passes them as arguments) 
   raise_on_unrecognized: true, 
@@ -37,7 +36,17 @@ module Miniparse
   # uses short options (besides long ones) for all options
   # useful if you want all your options to be shortable by default
   autoshortable: false,
+  
+  # admits -h besides --help in help predefined option
+  # shortable_help: false,
   }
+
+def self.reset_controls 
+  @behaviour_controls = {}
+  @behaviour_controls.merge! DEFAULT_CONTROLS
+end
+
+self.reset_controls
 
 # raises a KeyError if key is not a recognized control
 # TODO consider raising SyntaxError with a custom msg instead of KeyError
