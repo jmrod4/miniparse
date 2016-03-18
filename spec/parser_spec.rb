@@ -112,18 +112,26 @@ describe Miniparse::Parser do
   
   describe "#help_usage" do
     it 'knows msg for help on usage including options but no commands' do
-      push_control(:detailed_usage, true)
+      Helper.push_control(:detailed_usage, true)
       @parser.add_option("--sort", "order please")
       @parser.add_command("list", "many lines")
       help = @parser.help_usage
       expect(help).to match /usage.+sort/m
       expect(help).not_to match /list/m
-      pop_control
+      Helper.pop_control
     end
   end
   
   describe "#help_desc" do
-    it 'knows msg for descriptive help'
+  
+    it 'knows msg for descriptive help' do
+      @parser.add_option("--sort", "order please")
+      @parser.add_command("debug", "crush bugs")
+      help = @parser.help_desc
+      expect(help).to match /--sort.+order.+please/m
+      expect(help).to match /debug.+crush.+bugs/m
+    end
+  
     it "if option description is nil then option doesn't appear in the descriptive help" do
       @parser.add_option("--debug", nil)
       @parser.add_option("--sort", "order please")
@@ -271,7 +279,7 @@ describe Miniparse::Parser do
         default: true, negatable: true
 
       expect(@parser.current_command).to be nil
-      # TODO consider if correct options won't change until parsed
+      # TODO consider if it is correct that options won't reflect the defaults until parsed
       expect(@parser.options).to eq({})
       expect(@parser.command).to be nil
       expect(@parser.command_args).to be nil

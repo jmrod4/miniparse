@@ -49,7 +49,7 @@ class Command
                   Miniparse.control(:width_left)
 
     if Miniparse.control(:formatted_help)
-      lines = Miniparse.two_cols_word_wrap_lines(
+      lines = WordWrap.two_cols_word_wrap_lines(
               spec.to_s + add_spec, separator, 
               desc + add_desc,
               width_left, width_right)
