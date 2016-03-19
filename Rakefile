@@ -15,7 +15,7 @@ RSpec::Core::RakeTask.new(:spec)
 
 
 task :doc do
-  sh "yardoc --list-undoc"
+  sh "yard stats --list-undoc doc"
 end
 
 
