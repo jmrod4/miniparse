@@ -10,13 +10,17 @@ end
 #task :default => :test
 
 
+
 require "rspec/core/rake_task"
 RSpec::Core::RakeTask.new(:spec)
 
 
+
+desc "Generate yard documentation"
 task :doc do
-  sh "yard stats --list-undoc doc"
+  sh "yard doc"
 end
+
 
 
 task :default => :spec

@@ -7,7 +7,7 @@ require 'spec_helper'
 describe Miniparse::Parser do
 
   before :each do
-    Miniparse.reset_controls
+    Miniparse.reset_default_controls
     expect(@parser = Miniparse::Parser.new).not_to be nil
   end
 

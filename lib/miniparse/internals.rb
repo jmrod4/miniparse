@@ -1,7 +1,10 @@
 module Miniparse
   
 
+  
 # @private  
+# @param right_text [string] is a usage text to be displayed to the right
+# @return [string] the formatted text to the right with an usage header to the left 
 def self.help_usage_format(right_text)
   left_text = "usage: #{File.basename($PROGRAM_NAME)}"
   if Miniparse.control(:formatted_help)
@@ -14,12 +17,6 @@ def self.help_usage_format(right_text)
   end
 end
 
- 
-# @private  
-def self.debug(msg)
-  puts "\nDEBUG #{caller[0]}: #{msg}" 
-end
 
-  
 
 end

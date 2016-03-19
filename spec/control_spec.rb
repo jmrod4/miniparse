@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Miniparse do
   before :each do
-    Miniparse.reset_controls
+    Miniparse.reset_default_controls
   end
 
   it 'has global controls' do

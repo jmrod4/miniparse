@@ -6,17 +6,17 @@ module Miniparse
 # this is the key class to the miniparse library, 
 # please find below an example of use:
 #
-#    require 'miniparse'
+#     require 'miniparse'
 #    
-#    parser = Miniparse::Parser.new
-#    parser.add_option "--debug", "activate debugging"
-#    parser.parse ARGV
+#     parser = Miniparse::Parser.new
+#     parser.add_option "--debug", "activate debugging"
+#     parser.parse ARGV
 #    
-#    if parser.options[:debug]
-#      puts "DEBUG ACTIVATED!"
-#    else
-#      puts "run silently"
-#    end
+#     if parser.options[:debug]
+#       puts "DEBUG ACTIVATED!"
+#     else
+#       puts "run silently"
+#     end
 #
 class Parser
 
@@ -59,9 +59,11 @@ class Parser
   #   invocation in the command line (e.g. `--debug` or `--verbose LEVEL`)
   # @param desc [string|nil] is a short description of the option
   # @param opts [hash] are the options to apply to the option, keys can include:
+  #
   #   * :default
   #   * :negatable (used only for switches)
   #   * :shortable
+  #
   # @return [void] added Option
   def add_option(spec, desc, opts={}, &block)
     args = opts.merge(spec: spec, desc: desc)
@@ -71,14 +73,17 @@ class Parser
   # @param name [symbol|string] is the command name
   # @param desc [string|nil] is a short description of the command
   # @param opts [hash] are the options to apply to the command, keys can be:
+  #
   #   * :no_options  indicates the command has no command line options
+  #
+  # @return [void] added Command
   def add_command(name, desc, opts={}, &block)
     args = opts.merge(spec: name, desc: desc)
     commander.add_command(args, &block)
   end
 
   # @param argv is like ARGV but just for this parser
-  # @return unprocessed arguments
+  # @return [array] unprocessed arguments
   def parse(argv)
     if Miniparse.control(:help_cmdline_empty) && argv.empty?
       puts help_usage
@@ -99,7 +104,7 @@ class Parser
     end
   end
 
-  # @return a help message with the short descriptions
+  # @return [string] a help message with the short descriptions
   def help_desc
     #FIXME
     text = ""
@@ -111,7 +116,7 @@ class Parser
     text
   end
 
-  # @return a usage message
+  # @return [string] a usage message
   def help_usage
     #FIXME
     if Miniparse.control(:detailed_usage)
