@@ -2,7 +2,7 @@
     
 require 'miniparse'
 
-parser = Miniparse::Parser.new
+parser = Miniparse::Parser.new("my program does something wonderful")
 parser.add_option "--debug", "activate debugging"
 parser.parse ARGV
 

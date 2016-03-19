@@ -1,12 +1,16 @@
 #/usr/bin/env ruby
 
+# example of a supposed task application, 
+# just demonstrate the self documenting feature
+
 require 'miniparse'
 
-parser = Miniparse::Parser.new(global_args: false)
+parser = Miniparse::Parser.new("Provides an easy way to manage tasks.")
 
 parser.add_option("--debug", nil) do
   puts "Debug activated!"
 end
+
 parser.add_option("--file FILE", "file for storing the tasks", 
     default: "~/todos.txt")
 

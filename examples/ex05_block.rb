@@ -2,9 +2,10 @@ require 'miniparse'
 
 parser = Miniparse::Parser.new
 
-# if add_option has a block it will execute (at .parse) only when the option 
-# is specified in the parsed line command (i.e. argv)
-# the block will recive the option user specified value (a string) as argument 
+# if `add_option` has a block it will execute (when method `parse` called) only if the 
+# option is specified in the parsed command-line (i.e. argv)
+#
+# the block will receive the option user specified value (a string) as argument 
 parser.add_option("--kill THING", "kill something") do |val|
   puts "Die #{val}! DIE!"
 end 

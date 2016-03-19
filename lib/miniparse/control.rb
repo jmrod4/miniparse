@@ -37,6 +37,7 @@ DEFAULT_CONTROLS = {
   # useful if you want all your options to be shortable by default
   autoshortable: false,
   
+  # TODO: consider adding this option
   # admits -h besides --help in help predefined option
   # shortable_help: false,
   }
