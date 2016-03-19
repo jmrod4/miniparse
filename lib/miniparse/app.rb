@@ -8,7 +8,6 @@ module App
 
   @parser = nil
   @do_configure_parser = lambda { |parser| parser.parse ARGV }
-  @program_desc = nil
   
   def self.error(msg)
     $stderr.puts "error: #{msg}"  
@@ -30,9 +29,8 @@ module App
     parser.options  
   end
 
-  def self.configure_parser(program_description = nil,&block)
+  def self.configure_parser(&block)
     reset_parser
-    @program_desc = program_description
     @do_configure_parser = block
     nil    
   end
@@ -40,7 +38,7 @@ module App
   # lazy parser creation  
   def self.parser
     return @parser   if @parser
-    @parser = Miniparse::Parser.new(@program_desc)
+    @parser = Miniparse::Parser.new
     parser.add_option("--debug", nil, negatable: false)
     @do_configure_parser.call(parser)
     parser

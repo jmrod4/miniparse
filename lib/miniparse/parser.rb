@@ -6,7 +6,8 @@ module Miniparse
 class Parser
 
   # @return after parsing (i.e. specified) rest of arguments 
-  attr_reader :args, :program_desc
+  attr_reader :args
+  
   # @return parsed (i.e. specified) global options
   def options; global_broker.parsed_values; end
   
@@ -19,9 +20,9 @@ class Parser
   def current_command; commander.current_command; end
 
   
-  def initialize(program_description = nil)
+  def initialize
     @commander = Commander.new
-    @program_desc = program_description     
+    @program_desc = nil     
     @global_broker = OptionBroker.new do
       print program_desc + "\n"    if program_desc
       print help_usage + "\n"
@@ -29,7 +30,13 @@ class Parser
       exit ERR_HELP_REQ
     end
   end
-
+  
+  
+  def add_program_description(desc)
+    @program_desc = desc
+  end
+  
+  
   # @param spec is the option specification, similar to the option invocation 
   # in the command line (ex. "--debug" or "--verbose LEVEL")
   #
@@ -108,7 +115,7 @@ class Parser
 
 protected
 
-  attr_reader :commander, :global_broker
+  attr_reader :commander, :global_broker, :program_desc
 
   def current_broker
     commander.current_broker || global_broker

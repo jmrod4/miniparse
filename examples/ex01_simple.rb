@@ -2,7 +2,8 @@
     
 require 'miniparse'
 
-parser = Miniparse::Parser.new("my program does something wonderful")
+parser = Miniparse::Parser.new
+parser.add_program_description "my program help msg introduction\n"
 parser.add_option "--debug", "activate debugging"
 parser.parse ARGV
 

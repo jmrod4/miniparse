@@ -1,10 +1,10 @@
 require "miniparse/app"
 
-# the help introduction can be omitted 
-App.configure_parser("my program help introduction\n") do |parser|
+App.configure_parser do |parser|
   Miniparse.set_control(
       autoshortable: true,
       )
+  parser.add_program_description "my program help introduction\n"
   parser.add_option("--list", "list something")
   parser.parse ARGV
 end
@@ -16,6 +16,7 @@ App.info App.options    # to stdout
 App.warn App.options    # to stderr
 App.error App.options   # to stderr (note: it doesn't exit)
 
+# you have direct access to the parser object
 puts "parser object: #{App.parser}"
 
 puts 'Done.'

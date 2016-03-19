@@ -15,7 +15,7 @@ Let's try putting the following code in `myprogram.rb`
 
     require 'miniparse'
     
-    parser = Miniparse::Parser.new("my program does something wonderful")
+    parser = Miniparse::Parser.new
     parser.add_option "--debug", "activate debugging"
     parser.parse ARGV
     
@@ -41,7 +41,6 @@ or even get the auto generated help
     
     $ ruby yourprogram.rb --help
     
-    my program does something wonderful
     usage: ex01_readme.rb [--help] [--debug] <args>
 
     Options:
