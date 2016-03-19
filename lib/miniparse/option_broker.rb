@@ -1,7 +1,7 @@
 module Miniparse 
 
 
-
+# @private
 class OptionBroker
 
   attr_reader :parsed_values

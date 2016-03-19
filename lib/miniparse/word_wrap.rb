@@ -1,13 +1,14 @@
+# @private
 module WordWrap
 
 
 
 # wrap a text at word boundaries
 # 
-# @param text: the text to wrap
-# @param width: the maximum width allowed for on line before inserting line breaks
-# @param reformat: if true then the previous line breaks are removed and then the text wrappeed
-# @return text with line breaks inserted as necessasry 
+# @param text is the text to wrap
+# @param width is the maximum width allowed for on line before inserting line breaks
+# @param reformat if true then the existing line breaks are removed and then the text wrapped
+# @return text with line breaks inserted as necessary
 def self.word_wrap(text, width, reformat:false)
   text = text.gsub(/\s*\n/, ' ') if reformat
   
@@ -25,8 +26,9 @@ def self.word_wrap_lines(*args)
 end
 
 
-# same as two_cols_word_wrap(...) but returns an array of lines
+# wrap two texts in two separate columms
 #
+# @param separator is a string of characters inserted at every line between the two collums, for example ' ' or ' | ' 
 # @return an array of lines containing the merged and rearranged texts
 def self.two_cols_word_wrap_lines(text_left, separator, text_right, 
       width_left, width_right, reformat:false)
@@ -46,9 +48,8 @@ def self.two_cols_word_wrap_lines(text_left, separator, text_right,
 end
 
 
-# wrap two texts in two separate columms
+# same as two_cols_word_wrap_lines(...) but returns a text
 #
-# @param separator: a string of characters inserted at every line between the two collums, for example ' ' or ' | ' 
 # @return text with line breaks inserted as necessary 
 def self.two_cols_word_wrap(*args)
   two_cols_word_wrap_lines(*args).join("\n")

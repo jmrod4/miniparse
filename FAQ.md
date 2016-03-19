@@ -19,9 +19,11 @@ Additionally a `b` will be added for beta (i.e. pre-release) versions.
 
 ### What do you mean with _public interface_?
 
-For the complete public interface see the public methods and constants on these files:
+At the moment the complete public interface is restricted to the class Parser, the control Miniparse class methods and the optional module App
 
-  * [miniparse.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse.rb)
+You can find the complete specification in the public methods and constants on these files:
+
+  * [miniparse.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/constants.rb)
  
   * [miniparse/parser.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/parser.rb)
 

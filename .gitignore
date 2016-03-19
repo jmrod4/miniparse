@@ -1,6 +1,7 @@
 # editor files
 *.swp
 *~
+*.bak
 
 # temp files or dirs
 kk*

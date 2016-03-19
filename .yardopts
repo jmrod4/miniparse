@@ -1,0 +1,2 @@
+--no-private --markup markdown lib/**/*.rb ext/**/*.c - README.md FAQ.md LICENSE.txt
+

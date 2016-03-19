@@ -1,20 +1,26 @@
 module Miniparse
 
-# TODO create external documentation, maybe auto
-
 # TODO this class maybe does too much, separate a command broker or something similar
 
+
+# @private
 class Commander
 
-  attr_reader :current_command, :parsed_command, :parsed_args
+  # command ready to add options to
+  attr_reader :current_command_name
+  # command found while parsing arguments
+  attr_reader :parsed_command_name
+  # remaining command args after parsing the options for the parsed command 
+  attr_reader :parsed_args
   
+  # @return [hash] parsed option values for the parsed command
   def parsed_values
-    brokers[parsed_command].parsed_values  if parsed_command
+    brokers[parsed_command_name].parsed_values  if parsed_command_name
   end
   
-  # @return current command broker or nil
+  # @return [Broker] current command broker or nil if there is not current command
   def current_broker
-    brokers[current_command]
+    brokers[current_command_name]
   end
 
   def initialize
@@ -22,12 +28,12 @@ class Commander
     @brokers = {}
   end
     
-  # @param name is the command name (ex. either "kill" or :kill)
-  #
-  # @param desc is a short description of the command
-  # 
-  # @param opts are the options to apply to the command
-  # :no_options  indicates the command has no command line options
+  # @param args [hash] can have keys:
+  #   * :name is the command name (ex. either "kill" or :kill)
+  #   * :desc is a short description of the command
+  #   * :opts are the options to apply to the command, can have keys: 
+  #     * :no_options  indicates the command has no command line options
+  # @return [Command] the command added
   def add_command(args, &block)
     spec = args[:spec]
     unless name = Command.spec_to_name(spec)
@@ -43,12 +49,12 @@ class Commander
       puts help_command_text(name)
       exit ERR_HELP_REQ
     end
-    @current_command = name    unless args[:no_options]
+    @current_command_name = name    unless args[:no_options]
     cmd
   end  
 
-  # @param argv is ARGV like
-  # @return an array of argv parts: [global_argv, command_name, command_argv] 
+  # @param argv [array] is ARGV like
+  # @return [array] of argv parts: [global_argv, command_name, command_argv] 
   def split_argv(argv)
     index = index_command(argv)
     if index
@@ -60,18 +66,21 @@ class Commander
     end
   end
     
+  # @param name [symbol] command name
+  # @param argv [array] is ARGV like to parse
+  # @return [array] #parsed_args
   def parse_argv(name, argv)
     cmd = commands.fetch(name)
-    @parsed_command = cmd.name
+    @parsed_command_name = cmd.name
     @parsed_args = brokers[cmd.name].parse_argv(argv)
     commands[cmd.name].run(parsed_args)
     parsed_args
   end
   
-  # @return the command general help for the commands in the commander 
+  # @return [string] the command general help for the commands in the commander 
   def help_desc
     text = ""
-    if current_command
+    if current_command_name
       names_wo_desc = []
       desc_texts = commands.sort.collect do |name, cmd| 
         if cmd.desc
@@ -97,7 +106,9 @@ class Commander
 protected 
 
   attr_reader :commands, :brokers 
-
+  
+  # @param name [symbol] command name
+  # @return [string] text help for the specified command
   def help_command_text(name)
     header = "Command #{name}:  #{commands[name].desc}"
     text = "\n"
@@ -113,6 +124,8 @@ protected
     text
   end
   
+  # adds a default help command
+  # @return [void]
   def add_help_command
     add_command(spec: :help, desc: nil, no_options: true) do |args|
       index = index_command(args)
@@ -126,8 +139,8 @@ protected
     end
   end
 
-  # @param argv is like ARGV
-  # @return index number of the first found command, nil if not found
+  # @param argv [array] is like ARGV
+  # @return [int|nil] index number of the first found command, nil if not found
   def index_command(argv)
     commands.values.each do |cmd|
       index = argv.find_index  { |arg|  cmd.check(arg) }

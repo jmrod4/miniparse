@@ -14,10 +14,10 @@ describe Miniparse::Parser do
   it 'has a public interface' do
     expect(@parser).to respond_to :args
     expect(@parser).to respond_to :options
-    expect(@parser).to respond_to :command
+    expect(@parser).to respond_to :command_name
     expect(@parser).to respond_to :command_args
     expect(@parser).to respond_to :command_options
-    expect(@parser).to respond_to :current_command
+    expect(@parser).to respond_to :current_command_name
     expect(@parser).to respond_to :add_option
     expect(@parser).to respond_to :add_command
     expect(@parser).to respond_to :parse
@@ -167,17 +167,17 @@ describe Miniparse::Parser do
       @parser.add_option "--read FILE", "where to read",
         shortable: true      
       
-      expect(@parser.current_command).to be nil
+      expect(@parser.current_command_name).to be nil
 
       @parser.add_command :list, "output many lines"  
       @parser.add_option "--sort", "in an ordered way" 
-      expect(@parser.current_command).to be :list
+      expect(@parser.current_command_name).to be :list
 
       @parser.add_command "kill", nil
-      expect(@parser.current_command).to be :kill
+      expect(@parser.current_command_name).to be :kill
    
       expect(@parser.options).to eq({})
-      expect(@parser.command).to be nil
+      expect(@parser.command_name).to be nil
       expect(@parser.command_args).to be nil
       expect(@parser.command_options).to be nil
     end
@@ -220,28 +220,28 @@ describe Miniparse::Parser do
       
       it "can parse commands" do
         expect(@parser.parse(%w(list))).to eq []
-        expect(@parser.command).to be :list
+        expect(@parser.command_name).to be :list
         expect(@parser.command_args).to eq []
         expect(@parser.command_options).to eq({})
       end
 
       it "can parse commands with arguments" do
         expect(@parser.parse(%w(kill something))).to eq []
-        expect(@parser.command).to be :kill
+        expect(@parser.command_name).to be :kill
         expect(@parser.command_args).to eq ["something"]
         expect(@parser.command_options).to eq({})
       end
 
       it "can parse commands with options" do
         expect(@parser.parse(%w(list --sort))).to eq []
-        expect(@parser.command).to be :list
+        expect(@parser.command_name).to be :list
         expect(@parser.command_args).to eq []
         expect(@parser.command_options[:sort]).to be true
       end
       
       it "can parse only one command at a time" do
         expect(@parser.parse(%w(list kill))).to eq []
-        expect(@parser.command).to be :list
+        expect(@parser.command_name).to be :list
         expect(@parser.command_args).to eq ["kill"]
       end
 
@@ -283,10 +283,10 @@ describe Miniparse::Parser do
       @parser.add_option "--normal", nil,
         default: true, negatable: true
 
-      expect(@parser.current_command).to be nil
+      expect(@parser.current_command_name).to be nil
       # TODO consider if it is correct that options won't reflect the defaults until parsed
       expect(@parser.options).to eq({})
-      expect(@parser.command).to be nil
+      expect(@parser.command_name).to be nil
       expect(@parser.command_args).to be nil
       expect(@parser.command_options).to be nil
     end

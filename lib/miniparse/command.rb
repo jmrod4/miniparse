@@ -1,7 +1,7 @@
 module Miniparse
 
 
-
+# @private  
 class Command
 
   def self.spec_to_name(spec)
@@ -86,6 +86,7 @@ end
 
 # TODO FEATURE consider doing unambiguous matches for shortened options
 # TODO FEATURE consider the option default value setting the type
+# @private  
 class Option < Command
   
   attr_reader :value, :shortable
@@ -129,6 +130,7 @@ end
 
 
 
+# @private  
 class SwitchOption < Option
 
   def self.spec_to_name(spec)
@@ -170,6 +172,7 @@ end
 
 
 
+# @private  
 class FlagOption < Option
 
   def self.spec_to_name(spec)

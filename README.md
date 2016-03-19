@@ -11,18 +11,19 @@ Additionally the library is quite flexible and allows a lot of customization but
 
 Please find below a short but meaningful example, then you can **[get more examples](https://github.com/jmrod4/miniparse/tree/master/examples)** at [Github miniparse repository](https://github.com/jmrod4/miniparse).
 
-For the complete public interface see the public methods on these files:
+For the complete public interface see the class Parser in:
 
   * [miniparse/parser.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/parser.rb)
 
+The control class methods in:
+
   * [miniparse/control.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/control.rb)
   
+And the constants in: 
   
-plus the constants in: 
+  * [miniparse.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/constants.rb)
   
-  * [miniparse.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse.rb)
-  
-And the optional module App:  
+If you use the optional App module you can find the complete interface here:
 
   * [miniparse/app.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/app.rb)		
 

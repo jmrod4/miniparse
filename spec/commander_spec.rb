@@ -7,8 +7,8 @@ describe Miniparse::Commander do
   end
 
   it 'has a public interface' do
-    expect(@cmdr).to respond_to :current_command
-    expect(@cmdr).to respond_to :parsed_command
+    expect(@cmdr).to respond_to :current_command_name
+    expect(@cmdr).to respond_to :parsed_command_name
     expect(@cmdr).to respond_to :parsed_args
     expect(@cmdr).to respond_to :parsed_values
     expect(@cmdr).to respond_to :current_broker
@@ -23,9 +23,9 @@ describe Miniparse::Commander do
   end
 
   it 'keeps track of last added command' do
-    expect(@cmdr.current_command).to be nil
+    expect(@cmdr.current_command_name).to be nil
     expect(@cmdr.add_command(spec: :list)).not_to be nil
-    expect(@cmdr.current_command).to be :list
+    expect(@cmdr.current_command_name).to be :list
   end
 
   it 'keeps track of the current command option broker' do
@@ -52,14 +52,14 @@ describe Miniparse::Commander do
   it 'fills the parsed... methods when parsing (only args)' do
     expect(@cmdr.add_command(spec: :list)).not_to be nil
 
-    expect(@cmdr.parsed_command).to be nil
+    expect(@cmdr.parsed_command_name).to be nil
     expect(@cmdr.parsed_args).to be nil
     expect(@cmdr.parsed_values).to be nil
 
     only_args = ["a", "b"]
     expect(@cmdr.parse_argv(:list, only_args)).to eq only_args
 
-    expect(@cmdr.parsed_command).to be :list
+    expect(@cmdr.parsed_command_name).to be :list
     expect(@cmdr.parsed_args).to eq only_args
     expect(@cmdr.parsed_values).to eq({})
   end

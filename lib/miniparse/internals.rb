@@ -1,7 +1,7 @@
 module Miniparse
   
 
-  
+# @private  
 def self.help_usage_format(right_text)
   left_text = "usage: #{File.basename($PROGRAM_NAME)}"
   if Miniparse.control(:formatted_help)
@@ -13,8 +13,9 @@ def self.help_usage_format(right_text)
     left_text + " " + right_text
   end
 end
- 
 
+ 
+# @private  
 def self.debug(msg)
   puts "\nDEBUG #{caller[0]}: #{msg}" 
 end

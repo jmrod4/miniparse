@@ -9,10 +9,10 @@ class TestParserInterface < Minitest::Test
   end
   
   def test_parser_accessors
-    assert_respond_to @object, :current_command
+    assert_respond_to @object, :current_command_name
     assert_respond_to @object, :args
     assert_respond_to @object, :command_args
-    assert_respond_to @object, :command
+    assert_respond_to @object, :command_name
   end  
   
   def test_parser_methods
@@ -153,8 +153,8 @@ class TestParserParseOptions < Minitest::Test
     refute @parser.options.empty?
     assert @parser.options[:debug]
 
-    refute @parser.current_command
-    refute @parser.command
+    refute @parser.current_command_name
+    refute @parser.command_name
 
     @parser.parse []
     refute @parser.options[:debug].nil?
@@ -174,8 +174,8 @@ class TestParserParseOptions < Minitest::Test
     refute @parser.options.empty?
     assert_equal "1", @parser.options[:verbose]
 
-    refute @parser.current_command
-    refute @parser.command
+    refute @parser.current_command_name
+    refute @parser.command_name
     
     @parser.parse []
     refute @parser.options[:verbose].nil?
@@ -307,13 +307,13 @@ class TestParserCurrentCommand < Minitest::Test
     parser = Miniparse::Parser.new
     parser.add_command "list", "list something"
     
-    assert_equal :list, parser.current_command
+    assert_equal :list, parser.current_command_name
   end
   
   def test_without_command
     parser = Miniparse::Parser.new
 
-    assert_nil parser.current_command
+    assert_nil parser.current_command_name
   end
     
 end
@@ -329,12 +329,12 @@ class TestParserCommandParsed < Minitest::Test
   
   def test_no_command
     @parser.parse "a b c".split
-    assert_nil @parser.command
+    assert_nil @parser.command_name
   end
   
   def test_command
     @parser.parse "a b list c d".split
-    assert_equal :list, @parser.command
+    assert_equal :list, @parser.command_name
   end
 
 end
