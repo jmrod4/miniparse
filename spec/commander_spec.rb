@@ -7,15 +7,15 @@ describe Miniparse::Commander do
   end
 
   it 'has a public interface' do
-    expect(@cmdr.respond_to?(:current_command)).to be_truthy
-    expect(@cmdr.respond_to?(:parsed_command)).to be_truthy
-    expect(@cmdr.respond_to?(:parsed_args)).to be_truthy
-    expect(@cmdr.respond_to?(:parsed_values)).to be_truthy
-    expect(@cmdr.respond_to?(:current_broker)).to be_truthy
-    expect(@cmdr.respond_to?(:add_command)).to be_truthy
-    expect(@cmdr.respond_to?(:split_argv)).to be_truthy
-    expect(@cmdr.respond_to?(:parse_argv)).to be_truthy
-    expect(@cmdr.respond_to?(:help_desc)).to be_truthy
+    expect(@cmdr).to respond_to :current_command
+    expect(@cmdr).to respond_to :parsed_command
+    expect(@cmdr).to respond_to :parsed_args
+    expect(@cmdr).to respond_to :parsed_values
+    expect(@cmdr).to respond_to :current_broker
+    expect(@cmdr).to respond_to :add_command
+    expect(@cmdr).to respond_to :split_argv
+    expect(@cmdr).to respond_to :parse_argv
+    expect(@cmdr).to respond_to :help_desc
   end
 
   it 'can add a command' do
@@ -71,7 +71,7 @@ describe Miniparse::Commander do
   end 
 
   it "can parse built in help request via option --help" do 
-    expect(@cmdr.add_command(spec: :list, desc: "tentative")).not_to be nil
+    expect(@cmdr.add_command(spec: :list, desc: "my command description")).not_to be nil
     expect { @cmdr.parse_argv(:list, ["--help"]) }.to raise_error SystemExit
     expect { 
       begin
@@ -82,7 +82,7 @@ describe Miniparse::Commander do
   end  
 
   it "can parse built in help request via command help" do 
-    expect(@cmdr.add_command(spec: :list, desc: "tentative")).not_to be nil
+    expect(@cmdr.add_command(spec: :list, desc: "my command description")).not_to be nil
     expect { @cmdr.parse_argv(:help, ["list"]) }.to raise_error SystemExit
     expect { 
       begin
@@ -93,11 +93,11 @@ describe Miniparse::Commander do
   end  
 
   it "knows the help message for it's commands" do
-    expect(@cmdr.add_command(spec: :list, desc: "tentative")).not_to be nil
+    expect(@cmdr.add_command(spec: :list, desc: "my command description")).not_to be nil
     expect(@cmdr.add_command(spec: :sort, desc: "alpha")).not_to be nil
     msg = @cmdr.help_desc
  
-    expect(msg).to match /list.+tentative.+sort.+alpha.+help/m
+    expect(msg).to match /list.+description.+sort.+alpha.+help/m
     expect(msg).not_to match /usage/
   end
   

@@ -7,11 +7,11 @@ describe Miniparse::OptionBroker do
   end
   
   it 'has parsed values' do
-    expect(@broker.respond_to?(:parsed_values)).to be_truthy
+    expect(@broker).to respond_to :parsed_values
   end
   
   it 'can add an option' do
-    expect(@broker.respond_to?(:add_option)).to be_truthy
+    expect(@broker).to respond_to :add_option
   end
 
   it 'has a usage help text' do
