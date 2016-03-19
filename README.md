@@ -9,7 +9,7 @@ Additionally the library is quite flexible and allows a lot of customization but
 
 ## How to use
 
-Please find below a short but meaningful example (you can get more at the [examples in Github miniparse repository](https://github.com/jmrod4/miniparse/tree/master/examples)).
+Please find below a short but meaningful example, then you can **[get more examples](https://github.com/jmrod4/miniparse/tree/master/examples)** in [Github miniparse repository](https://github.com/jmrod4/miniparse).
 
 Let's try putting the following code in `myprogram.rb`
 

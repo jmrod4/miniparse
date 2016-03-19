@@ -1,10 +1,11 @@
+
 # Frequently Asked Questions
 
 ---
 
-Q: What's the meaning of x.y.z in your version numbers?
+### What's the meaning of x.y.z in your version numbers?
 
-A: We use a [Semantic Versioning](http://semver.org/) like scheme of MAJOR.MINOR.PATCH:
+We use a [Semantic Versioning](http://semver.org/) like scheme of MAJOR.MINOR.PATCH:
 
 The MAJOR version numbers will only change when backwards incompatible changes are made to the public interface.
 
@@ -16,15 +17,15 @@ Additionally a `b` will be added for beta (i.e. pre-release) versions.
 
 ---
 
-Q: Why have you `protected` methods in your classes?
+### Why have you `protected` methods in your classes?
 
-A: It is the tersest way we found of defining a public interface. The non-public interface can be changed at any time, even when just releasing minor patches.
+It is the tersest way we found of defining a public interface. Please note that the non-public interface can be changed at any time, even when just releasing minor patches.
 
 ---
 
-Q: Nevertheless, I wish I could use that protected methods.
+### Nevertheless, I wish I could use that protected methods.
 
-A: You can. Just use `object.send(:desired_method)` or make the method public adding to your code the following:
+You can. Just use `object.send(:desired_method)` or make the method public adding to your code the following:
 
     module Miniparse
       class DesiredClass
