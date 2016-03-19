@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Juanma Rodriguez"]
   spec.email         = ["jmrod4@gmail.com"]
 
-  spec.summary       = %q{Miniparse is a easy to use yet flexible and powerful ruby library for parsing command-line options.}
+  spec.summary       = %q{Miniparse is an easy to use yet flexible and powerful ruby library for parsing command-line options.}
 #  spec.description   = %q{TODO: Write a longer description or delete this line.}
   spec.homepage      = "https://github.com/jmrod4/miniparse"
   spec.license       = "MIT"
