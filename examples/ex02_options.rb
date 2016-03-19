@@ -2,9 +2,13 @@ require 'miniparse'
 
 parser = Miniparse::Parser.new
 
-parser.add_option("--sort", "always sort the output", shortable: true)
-parser.add_option("--pill", "just a silly option", shortable: true)
+parser.add_option("--sort", "always sort the output", 
+    shortable: true)
 
+# a negatable option can be specified as '--option' or '--no-option'    
+parser.add_option("--pill", "just a silly option", 
+    shortable: true, negatable: true)
+    
 # if description is nil, then the option won't appear in the help description, only in the usage string
 parser.add_option("--debug", nil)
 
