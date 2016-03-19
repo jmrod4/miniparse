@@ -3,7 +3,7 @@
 
 ---
 
-### What's the meaning of x.y.z in your version numbers?
+### What's the meaning of _x.y.z_ in your version numbers?
 
 We use a [Semantic Versioning](http://semver.org/) like scheme of MAJOR.MINOR.PATCH:
 
@@ -15,6 +15,20 @@ The PATCH number will change when fixing bugs or implementing internal or minor 
 
 Additionally a `b` will be added for beta (i.e. pre-release) versions.
 
+---
+
+### What do you mean with _public interface_?
+
+For the complete public interface see the public methods and constants on these files:
+
+  * [miniparse.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse.rb)
+ 
+  * [miniparse/parser.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/parser.rb)
+
+  * [miniparse/control.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/control.rb)
+
+  * [miniparse/app.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/app.rb)	
+	
 ---
 
 ### Why have you `protected` methods in your classes?

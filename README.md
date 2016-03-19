@@ -3,13 +3,30 @@
 
 **Miniparse is an easy to use yet flexible and powerful ruby library for parsing command-line options.**
 
-The main objetive of this implementation is minimun boiler plate with ease of use but keeping a self documenting specification. 
+The main objetive of this implementation is to get minimun boiler plate but keep ease of use and a self documenting specification. 
 
 Additionally the library is quite flexible and allows a lot of customization but always with sane defaults so **you don't need to learn nothing to start using it**.
 
-## How to use
+## How to Use
 
 Please find below a short but meaningful example, then you can **[get more examples](https://github.com/jmrod4/miniparse/tree/master/examples)** at [Github miniparse repository](https://github.com/jmrod4/miniparse).
+
+For the complete public interface see the public methods on these files:
+
+  * [miniparse/parser.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/parser.rb)
+
+  * [miniparse/control.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/control.rb)
+  
+  
+plus the constants in: 
+  
+  * [miniparse.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse.rb)
+  
+And the optional module App:  
+
+  * [miniparse/app.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/app.rb)		
+
+## Simple Example
 
 Let's try putting the following code in `myprogram.rb`
 
@@ -55,10 +72,14 @@ You can install it as an standard ruby gem with
 then to use you can require it adding the following to the top of your ruby source file
 
     require 'miniparse'
+	
+## F.A.Q.
+
+There is a FAQ available at https://github.com/jmrod4/miniparse/blob/master/FAQ.md
     
 ## Contributing
 
-Bug reports and pull requests are welcome at https://github.com/jmrod4/miniparse.
+Bug reports and pull requests are most welcome at https://github.com/jmrod4/miniparse.
 
 After checking out the repo you can:
 
@@ -70,6 +91,6 @@ After checking out the repo you can:
 
 ## License
 
-This library is copyrighted software and it's available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+This library has Copyright 2016 Juanma Rodriguez and it's available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
 You can find the source code at https://github.com/jmrod4/miniparse.
