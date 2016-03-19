@@ -19,15 +19,15 @@ class Parser
   def current_command; commander.current_command; end
 
   
-  def initialize(program_description = '')
-    @global_broker = OptionBroker.new do
-      puts program_desc
-      puts help_usage
-      puts help_desc
-      exit ERR_HELP_REQ
-    end
+  def initialize(program_description = nil)
     @commander = Commander.new
     @program_desc = program_description     
+    @global_broker = OptionBroker.new do
+      print program_desc + "\n"    if program_desc
+      print help_usage + "\n"
+      print help_desc + "\n"
+      exit ERR_HELP_REQ
+    end
   end
 
   # @param spec is the option specification, similar to the option invocation 
