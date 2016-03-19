@@ -9,7 +9,7 @@ Additionally the library is quite flexible and allows a lot of customization but
 
 ## How to use
 
-Please find below a short but meaningful example, then you can **[get more examples](https://github.com/jmrod4/miniparse/tree/master/examples)** in [Github miniparse repository](https://github.com/jmrod4/miniparse).
+Please find below a short but meaningful example, then you can **[get more examples](https://github.com/jmrod4/miniparse/tree/master/examples)** at [Github miniparse repository](https://github.com/jmrod4/miniparse).
 
 Let's try putting the following code in `myprogram.rb`
 
@@ -71,6 +71,6 @@ After checking out the repo you can:
 
 ## License
 
-This library is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+This library is copyrighted software and it's available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
 You can find the source code at https://github.com/jmrod4/miniparse.

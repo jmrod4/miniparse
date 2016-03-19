@@ -2,7 +2,7 @@ module Miniparse
 
 
 
-VERSION = "0.3.0b"
+VERSION = "0.3.0"
 
 
 
