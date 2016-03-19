@@ -12,17 +12,17 @@ describe Miniparse::Parser do
   end
 
   it 'has a public interface' do
-    expect(@parser).to respond_to(:args)
-    expect(@parser).to respond_to(:options)
-    expect(@parser).to respond_to(:command)
-    expect(@parser).to respond_to(:command_args)
-    expect(@parser).to respond_to(:command_options)
-    expect(@parser).to respond_to(:current_command)
-    expect(@parser).to respond_to(:add_option)
-    expect(@parser).to respond_to(:add_command)
-    expect(@parser).to respond_to(:parse)
-    expect(@parser).to respond_to(:help_desc)
-    expect(@parser).to respond_to(:help_usage)
+    expect(@parser).to respond_to :args
+    expect(@parser).to respond_to :options
+    expect(@parser).to respond_to :command
+    expect(@parser).to respond_to :command_args
+    expect(@parser).to respond_to :command_options
+    expect(@parser).to respond_to :current_command
+    expect(@parser).to respond_to :add_option
+    expect(@parser).to respond_to :add_command
+    expect(@parser).to respond_to :parse
+    expect(@parser).to respond_to :help_desc
+    expect(@parser).to respond_to :help_usage
   end
   
   describe "#add_option" do

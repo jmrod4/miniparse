@@ -7,7 +7,7 @@ module App
   ERR_IO = 4
 
   @parser = nil
-  @do_configure_parser = lambda { |parser| nil }
+  @do_configure_parser = lambda { |parser| parser.parse ARGV }
   
   def self.error(msg)
     $stderr.puts "error: #{msg}"  

@@ -5,13 +5,13 @@ require 'spec_helper'
 shared_examples :commandable do
 
   it 'responds to commandable interface' do
-    expect(@obj.class.respond_to? :spec_to_name).to be_truthy
-    expect(@obj.class.respond_to? :valid_spec).to be_truthy
-    expect(@obj.respond_to? :name).to be_truthy
-    expect(@obj.respond_to? :desc).to be_truthy
-    expect(@obj.respond_to? :run).to be_truthy
-    expect(@obj.respond_to? :help_desc).to be_truthy
-    expect(@obj.respond_to? :check).to be_truthy
+    expect(@obj.class).to respond_to :spec_to_name
+    expect(@obj.class).to respond_to :valid_spec
+    expect(@obj).to respond_to :name
+    expect(@obj).to respond_to :desc
+    expect(@obj).to respond_to :run
+    expect(@obj).to respond_to :help_desc
+    expect(@obj).to respond_to :check
   end
 
   it 'has a name' do

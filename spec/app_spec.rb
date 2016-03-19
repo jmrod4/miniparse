@@ -6,7 +6,8 @@ require 'miniparse/app'
 describe App do
   
   before :each do
-    App.reset_parser 
+    # default uses ARGV and that interferes with rspec
+    App.configure_parser { |parser| parser.parse "" }
   end
   
   describe "public interface" do
@@ -46,8 +47,7 @@ describe App do
     end
     
   end
-  
-  
+    
   describe "##configure_parser" do
     it "allows to configure the parser created by ##parser" do
       App.configure_parser do |parser|
