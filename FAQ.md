@@ -23,7 +23,7 @@ At the moment the complete public interface is restricted to the class Parser, t
 
 You can find the complete specification in the public methods and constants on these files:
 
-  * [miniparse.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/constants.rb)
+  * [miniparse/constants.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/constants.rb)
  
   * [miniparse/parser.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/parser.rb)
 
