@@ -2,7 +2,7 @@
     
 require 'miniparse'
 
-# following is just a copy of the controls defined in control.rb
+# following is just a copy of the controls defined in constants.rb
 # you don't need to specify all, only the ones you want to change (maybe none)
 
 Miniparse.set_control( {
@@ -58,6 +58,6 @@ end
 puts "args     #{parser.args.inspect}"
 puts "options  #{parser.options.inspect}"
 # for commands
-puts "parsed command  #{parser.command.inspect}"
+puts "parsed command  #{parser.command_name.inspect}"
 puts "command args    #{parser.command_args.inspect}"
 puts "command options #{parser.command_options.inspect}"
