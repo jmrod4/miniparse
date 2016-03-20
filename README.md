@@ -21,7 +21,7 @@ And finally, the source files for the complete public interface are:
 
   * the control class methods at [miniparse/control.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/control.rb)
   
-  * the constants in [miniparse.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/constants.rb)
+  * the constants in [miniparse/constants.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/constants.rb)
   
   * and if you use the optional App module you can find the source in [miniparse/app.rb](https://github.com/jmrod4/miniparse/blob/master/lib/miniparse/app.rb)		
 
