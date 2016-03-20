@@ -84,11 +84,12 @@ end
 
 
 
+
+# @private  
 # TODO FEATURE consider doing unambiguous matches for shortened options
 # TODO FEATURE consider the option default value setting the type
-# @private  
 class Option < Command
-  
+
   attr_reader :value, :shortable
 
   def check(arg)

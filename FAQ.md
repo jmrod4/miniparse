@@ -13,7 +13,7 @@ The MINOR version number will change when adding new functionality or some exten
 
 The PATCH number will change when fixing bugs or implementing internal or minor improvements. No changes will be made to the public interface.
 
-Additionally a `b` will be added for beta (i.e. pre-release) versions.
+Additionally a `b` will be added for beta or a `pre` for pre-release versions.
 
 ---
 
