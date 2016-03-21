@@ -1,5 +1,6 @@
 The MIT License (MIT)
 
+Miniparse Ruby Library
 Copyright (c) 2016 Juanma Rodriguez
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
