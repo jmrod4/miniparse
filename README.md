@@ -1,9 +1,8 @@
 
-# Miniparse
+# miniparse [![GitHub issues](https://img.shields.io/github/issues/jmrod4/miniparse.svg)](https://github.com/jmrod4/miniparse/issues) [![GitHub tag](https://img.shields.io/github/tag/jmrod4/miniparse.svg)](https://github.com/jmrod4/miniparse) [![Gem version](https://img.shields.io/gem/v/miniparse.svg)](https://rubygems.org/gems/miniparse)
 
-[![GitHub version](https://badge.fury.io/gh/jmrod4%2Fminiparse.svg)](https://badge.fury.io/gh/jmrod4%2Fminiparse) [![Gem Version](https://badge.fury.io/rb/miniparse.svg)](https://badge.fury.io/rb/miniparse)
+**Miniparse is an easy to use yet flexible and powerful Ruby library for parsing command-line options.**
 
-**Miniparse is an easy to use yet flexible and powerful ruby library for parsing command-line options.**
 
 The main objetive of this implementation is to get minimun boiler plate but keep ease of use and a self documenting specification. 
 
@@ -64,11 +63,11 @@ or even get the auto generated help
 	   
 ## Installation
 
-You can install it as an standard ruby gem with
+You can install it as an standard Ruby gem with
 
     $ gem install miniparse
     
-then to use you can require it adding the following to the top of your ruby source file
+then to use you can require it adding the following to the top of your Ruby source file
 
     require 'miniparse'
 	
@@ -90,6 +89,8 @@ After checking out the repo you can:
 
 ## License
 
-This library has Copyright 2016 Juanma Rodriguez and it's available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+Copryright 2016 Juanma Rodriguez
+
+This library is copyrighted software and it can be used and distributed as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
 
 You can find the source code at https://github.com/jmrod4/miniparse.
