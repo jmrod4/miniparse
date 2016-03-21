@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Juanma Rodriguez"]
   spec.email         = ["jmrod4@gmail.com"]
 
-  spec.summary       = %q{Miniparse is an easy to use yet flexible and powerful ruby library for parsing command-line options.}
+  spec.summary       = %q{miniparse is an easy to use yet flexible and powerful Ruby library for parsing command-line options.}
 #  spec.description   = %q{TODO: Write a longer description or delete this line.}
   spec.homepage      = "https://github.com/jmrod4/miniparse"
   spec.license       = "MIT"
@@ -26,6 +26,8 @@ Gem::Specification.new do |spec|
   spec.bindir        = "exe"
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
+  
+  spec.required_ruby_version = "~> 2.0"
 
   spec.add_development_dependency "bundler", "~> 1.11"
   spec.add_development_dependency "rake", "~> 10.0"
