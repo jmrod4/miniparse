@@ -4,7 +4,7 @@
 **Miniparse is an easy to use yet flexible and powerful Ruby library for parsing command-line options.**
 
 
-The main objetive of this implementation is to get minimun boiler plate but keep ease of use and a self documenting specification. 
+The main objective of this implementation is to get minimun boiler plate but keep ease of use and a self documenting specification. 
 
 Additionally the library is quite flexible and allows a lot of customization but always with sane defaults so **you don't need to learn nothing to start using it**.
 
@@ -71,7 +71,7 @@ then to use you can require it adding the following to the top of your Ruby sour
 
     require 'miniparse'
 	
-## F.A.Q.
+## FAQ
 
 There is a FAQ available at https://github.com/jmrod4/miniparse/blob/master/FAQ.md
     

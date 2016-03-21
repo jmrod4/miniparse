@@ -93,7 +93,7 @@ class Parser
       global_argv, cmd_name, cmd_argv = commander.split_argv(argv)
       @args = global_broker.parse_argv(global_argv)
       
-      commander.parse_argv(cmd_name, cmd_argv)    if cmd.name
+      commander.parse_argv(cmd_name, cmd_argv)    if cmd_name
       if Miniparse.control(:raise_global_args) && !args.empty?
         error = current_command_name  ?  "unrecognized command"  :  "extra arguments"
         raise ArgumentError, "#{error} '#{args[0]}'"
