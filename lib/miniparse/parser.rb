@@ -92,11 +92,9 @@ class Parser
     try_argument do
       global_argv, cmd_name, cmd_argv = commander.split_argv(argv)
       @args = global_broker.parse_argv(global_argv)
-      if cmd_name
-        commander.parse_argv(cmd_name, cmd_argv)
-      end
-      if Miniparse.control(:raise_global_args) && (! args.empty?)
-        # FIXME review this logic later
+      
+      commander.parse_argv(cmd_name, cmd_argv)    if cmd.name
+      if Miniparse.control(:raise_global_args) && !args.empty?
         error = current_command_name  ?  "unrecognized command"  :  "extra arguments"
         raise ArgumentError, "#{error} '#{args[0]}'"
       end
@@ -106,7 +104,6 @@ class Parser
 
   # @return [string] a help message with the short descriptions
   def help_desc
-    #FIXME
     text = ""
     if (global = global_broker.help_desc).size > 0
       text += "\nOptions:\n"
@@ -118,7 +115,6 @@ class Parser
 
   # @return [string] a usage message
   def help_usage
-    #FIXME
     if Miniparse.control(:detailed_usage)
       right_text = @global_broker.help_usage
     elsif current_command_name
@@ -126,10 +122,12 @@ class Parser
     else
       right_text = "[options]"
     end
+
     if current_command_name
       right_text += " <command> [command_options]"
     end
     right_text += " <args>"
+
     Miniparse.help_usage_format(right_text)
   end
 
@@ -141,19 +139,16 @@ protected
     commander.current_broker || global_broker
   end
 
-  def try_argument
-    #FIXME
-    begin
-      yield
-    rescue ArgumentError => except
-      raise    unless Miniparse.control(:rescue_argument_error)
-      prg = File.basename($PROGRAM_NAME)
-      $stderr.puts "#{prg}: error: #{except.message}"
-      $stderr.puts
-      $stderr.puts help_usage
-      # (#{except.backtrace[-1]})")
-      exit ERR_ARGUMENT
-    end
+  def try_argument(&block)
+    block.call
+  rescue ArgumentError => except
+    raise    unless Miniparse.control(:rescue_argument_error)
+    prg = File.basename($PROGRAM_NAME)
+    $stderr.puts "#{prg}: error: #{except.message}"
+    $stderr.puts
+    $stderr.puts help_usage
+    # (#{except.backtrace[-1]})")
+    exit ERR_ARGUMENT
   end
     
 end
