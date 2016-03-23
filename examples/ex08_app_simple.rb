@@ -1,9 +1,10 @@
 require "miniparse/app"
 
+Miniparse.set_control(
+    autoshortable: true,
+    )
+
 App.configure_parser do |parser|
-  Miniparse.set_control(
-      autoshortable: true,
-      )
   parser.add_program_description "my program help introduction\n"
   parser.add_option("--list", "list something")
   parser.parse ARGV
