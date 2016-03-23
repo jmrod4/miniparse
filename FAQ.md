@@ -5,7 +5,7 @@
 
 ### What's the meaning of _x.y.z_ in your version numbers?
 
-We use a [Semantic Versioning](http://semver.org/) like scheme of MAJOR.MINOR.PATCH:
+For version 1.0.0 and following we use a [Semantic Versioning](http://semver.org/) like scheme of MAJOR.MINOR.PATCH:
 
 The MAJOR version numbers will only change when backwards incompatible changes are made to the public interface.
 
@@ -14,6 +14,8 @@ The MINOR version number will change when adding new functionality or some exten
 The PATCH number will change when fixing bugs or implementing internal or minor improvements. No changes will be made to the public interface.
 
 Additionally a `b` will be added for beta or a `pre` for pre-release versions.
+
+NOTE: Until 1.0 version is released the library is considered in an _unstable_ state and any changes to the public interface will change only the MINOR version number.
 
 ---
 

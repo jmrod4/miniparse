@@ -4,8 +4,7 @@ All MAJOR.MINOR changes to Miniparse will be documented in this file.
 This project uses an aproximation to [Semantic Versioning](http://semver.org/), 
 see [miniparse FAQ](https://github.com/jmrod4/miniparse/blob/master/FAQ.md) for details.
  
-
-## [v0.4.0.pre] - (testing) 
+## [v0.4.0] - 2016-03-23
 
 ### Public interface
 to gain in clarity
@@ -18,7 +17,7 @@ new feature
 ### Improved
 - greatly improved source yard documentation (used by rubygems site) and used @private to guard the non-public interface
 - improved examples
-- modified app_simple example so that set_control has a global effect
+- modified app_simple example so that set_control is outside configure block and has a global effect
 
 ### Fixed
 - added gemspec requeriment to Ruby 2.0 or later
