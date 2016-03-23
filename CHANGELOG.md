@@ -13,11 +13,12 @@ to gain in clarity
 - Parser#current_command_name replaces Parser#current_command
 
 new feature
-- added Parser#add_program_description
+- added Parser#add_program_description(...)
 
 ### Improved
 - greatly improved source yard documentation (used by rubygems site) and used @private to guard the non-public interface
 - improved examples
+- modified app_simple example so that set_control has a global effect
 
 ### Fixed
 - added gemspec requeriment to Ruby 2.0 or later
