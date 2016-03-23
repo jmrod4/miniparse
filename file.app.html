@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: app
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.app.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: app</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'><pre class="code ruby"><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>miniparse</span><span class='tstring_end'>&#39;</span></span>
+
+<span class='comment'># this optional module allows an easy integration of parsing and trivial output,
+</span><span class='comment'># in your application
+</span><span class='comment'># 
+</span><span class='comment'># an example of use:
+</span><span class='comment'>#
+</span><span class='comment'>#    require &quot;miniparse/app&quot;
+</span><span class='comment'>#    
+</span><span class='comment'>#    App.configure_parser do |parser|
+</span><span class='comment'>#      Miniparse.set_control(
+</span><span class='comment'>#          autoshortable: true,
+</span><span class='comment'>#          )
+</span><span class='comment'>#      parser.add_program_description &quot;my program help introduction\n&quot;
+</span><span class='comment'>#      parser.add_option(&quot;--list&quot;, &quot;list something&quot;)
+</span><span class='comment'>#      parser.parse ARGV
+</span><span class='comment'>#    end
+</span><span class='comment'>#    
+</span><span class='comment'>#    # to see App.debug you have to specify the --debug option
+</span><span class='comment'>#    # for example: &#39;ruby ex08_app_simple.rb --debug&#39; 
+</span><span class='comment'>#    App.debug App.options   # to stdout
+</span><span class='comment'>#    App.info App.options    # to stdout
+</span><span class='comment'>#    App.warn App.options    # to stderr
+</span><span class='comment'>#    App.error App.options   # to stderr (note: it doesn&#39;t exit)
+</span><span class='comment'>#    
+</span><span class='comment'>#    # you have direct access to the parser object
+</span><span class='comment'>#    puts &quot;parser object: #{App.parser}&quot;
+</span><span class='comment'>#    
+</span><span class='comment'>#    puts &#39;Done.&#39;
+</span><span class='comment'>#
+</span><span class='kw'>module</span> <span class='const'>App</span>
+ 
+  <span class='comment'># error exit codes
+</span>  <span class='const'>ERR_NOT_FOUND</span> <span class='op'>=</span> <span class='int'>3</span>
+  <span class='const'>ERR_IO</span> <span class='op'>=</span> <span class='int'>4</span>
+
+  <span class='ivar'>@parser</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='ivar'>@do_configure_parser</span> <span class='op'>=</span> <span class='id identifier rubyid_lambda'>lambda</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_parser'>parser</span><span class='op'>|</span> <span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span> <span class='const'>ARGV</span> <span class='rbrace'>}</span>
+  
+  <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_error'>error</span><span class='lparen'>(</span><span class='id identifier rubyid_msg'>msg</span><span class='rparen'>)</span>
+    <span class='gvar'>$stderr</span><span class='period'>.</span><span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>error: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_msg'>msg</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>  
+  <span class='kw'>end</span>
+  
+  <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_warn'>warn</span><span class='lparen'>(</span><span class='id identifier rubyid_msg'>msg</span><span class='rparen'>)</span>
+    <span class='gvar'>$stderr</span><span class='period'>.</span><span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>warning: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_msg'>msg</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>  
+  <span class='kw'>end</span>
+  
+  <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_info'>info</span><span class='lparen'>(</span><span class='id identifier rubyid_msg'>msg</span><span class='rparen'>)</span>
+    <span class='gvar'>$stdout</span><span class='period'>.</span><span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>info: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_msg'>msg</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>  
+  <span class='kw'>end</span>
+  
+  <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_debug'>debug</span><span class='lparen'>(</span><span class='id identifier rubyid_msg'>msg</span><span class='rparen'>)</span>
+    <span class='gvar'>$stdout</span><span class='period'>.</span><span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>debug: </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_msg'>msg</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>    <span class='kw'>if</span> <span class='const'>App</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:debug</span><span class='rbracket'>]</span>
+  <span class='kw'>end</span>
+  
+  <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span>
+    <span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span>  
+  <span class='kw'>end</span>
+
+  <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_configure_parser'>configure_parser</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_reset_parser'>reset_parser</span>
+    <span class='ivar'>@do_configure_parser</span> <span class='op'>=</span> <span class='id identifier rubyid_block'>block</span>
+    <span class='kw'>nil</span>    
+  <span class='kw'>end</span>
+  
+  <span class='comment'># lazy parser creation  
+</span>  <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_parser'>parser</span>
+    <span class='kw'>return</span> <span class='ivar'>@parser</span>   <span class='kw'>if</span> <span class='ivar'>@parser</span>
+    <span class='ivar'>@parser</span> <span class='op'>=</span> <span class='const'>Miniparse</span><span class='op'>::</span><span class='const'>Parser</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span>
+    <span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_add_option'>add_option</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>--debug</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>negatable:</span> <span class='kw'>false</span><span class='rparen'>)</span>
+    <span class='ivar'>@do_configure_parser</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='id identifier rubyid_parser'>parser</span><span class='rparen'>)</span>
+    <span class='id identifier rubyid_parser'>parser</span>
+  <span class='kw'>end</span>     
+    
+  <span class='comment'># re-initialize the parser (but doesn&#39;t affect the configuration)
+</span>  <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_reset_parser'>reset_parser</span>
+    <span class='ivar'>@parser</span> <span class='op'>=</span> <span class='kw'>nil</span>
+  <span class='kw'>end</span>
+
+<span class='kw'>end</span></pre></div></div>
+
+    <div id="footer">
+  Generated on Sat Mar 19 21:25:25 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>

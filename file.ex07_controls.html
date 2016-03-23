@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>
+  File: ex07_controls
+  
+    &mdash; Documentation by YARD 0.8.7.6
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" charset="utf-8" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" charset="utf-8" />
+
+<script type="text/javascript" charset="utf-8">
+  hasFrames = window.top.frames.main ? true : false;
+  relpath = '';
+  framesUrl = "frames.html#!file.ex07_controls.html";
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div id="header">
+      <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: ex07_controls</span>
+  
+
+  <div class="noframes"><span class="title">(</span><a href="." target="_top">no frames</a><span class="title">)</span></div>
+</div>
+
+      <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+      Class List
+    </a>
+  
+    <a class="full_list_link" id="method_list_link"
+        href="method_list.html">
+      Method List
+    </a>
+  
+    <a class="full_list_link" id="file_list_link"
+        href="file_list.html">
+      File List
+    </a>
+  
+</div>
+      <div class="clear"></div>
+    </div>
+
+    <iframe id="search_frame"></iframe>
+
+    <div id="content"><div id='filecontents'><pre class="code ruby"><span class='comment'># example from the project readme
+</span>    
+<span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>miniparse</span><span class='tstring_end'>&#39;</span></span>
+
+<span class='comment'># following is just a copy of the controls defined in control.rb
+</span><span class='comment'># you don&#39;t need to specify all, only the ones you want to change (maybe none)
+</span>
+<span class='const'>Miniparse</span><span class='period'>.</span><span class='id identifier rubyid_set_control'>set_control</span><span class='lparen'>(</span> <span class='lbrace'>{</span>
+    <span class='comment'># gives an error if there is an unrecognized option either short or long
+</span>    <span class='comment'># (if not then passes them as arguments) 
+</span>    <span class='label'>raise_on_unrecognized:</span> <span class='kw'>true</span><span class='comma'>,</span> 
+    
+    <span class='comment'># intercepts .parse ArgumentError (i.e. the commandline user introduced 
+</span>    <span class='comment'># wrong or invalid options) and exits with a helpful msg  
+</span>    <span class='label'>rescue_argument_error:</span> <span class='kw'>true</span><span class='comma'>,</span>
+    
+    <span class='comment'># gives usage help and exits if commandline is empty
+</span>    <span class='comment'># useful if your app always needs args or options to work
+</span>    <span class='label'>help_cmdline_empty:</span> <span class='kw'>false</span><span class='comma'>,</span>
+    
+    <span class='comment'># raises an ArgumentError if there are global args 
+</span>    <span class='comment'># (after parsing options and commands)
+</span>    <span class='comment'># useful if you don&#39;t expect any args
+</span>    <span class='label'>raise_global_args:</span> <span class='kw'>false</span><span class='comma'>,</span>
+
+    <span class='comment'># formats help output with the width_... controls
+</span>    <span class='label'>formatted_help:</span> <span class='kw'>true</span><span class='comma'>,</span>
+    
+    <span class='label'>width_display:</span> <span class='int'>79</span><span class='comma'>,</span>
+    <span class='label'>width_indent:</span> <span class='int'>3</span><span class='comma'>,</span>
+    <span class='label'>width_left:</span> <span class='int'>18</span><span class='comma'>,</span>
+    
+    <span class='comment'># use a detailed options help usage msg or a generic one
+</span>    <span class='label'>detailed_usage:</span> <span class='kw'>true</span><span class='comma'>,</span>
+
+    <span class='comment'># uses --no-... options for all options
+</span>    <span class='comment'># useful if you want all your options to be negatable by default
+</span>    <span class='label'>autonegatable:</span> <span class='kw'>false</span><span class='comma'>,</span>
+    
+    <span class='comment'># uses short options (besides long ones) for all options
+</span>    <span class='comment'># useful if you want all your options to be shortable by default
+</span>    <span class='label'>autoshortable:</span> <span class='kw'>false</span><span class='comma'>,</span>
+    <span class='rbrace'>}</span> <span class='rparen'>)</span>
+
+
+<span class='id identifier rubyid_parser'>parser</span> <span class='op'>=</span> <span class='const'>Miniparse</span><span class='op'>::</span><span class='const'>Parser</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>does something wonderful</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_add_option'>add_option</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>--debug</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>activate debugging</span><span class='tstring_end'>&quot;</span></span>
+<span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span> <span class='const'>ARGV</span>
+
+<span class='kw'>if</span> <span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:debug</span><span class='rbracket'>]</span>
+  <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>DEBUG ACTIVATED!</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>else</span>
+  <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>run silently</span><span class='tstring_end'>&quot;</span></span>
+<span class='kw'>end</span>
+
+<span class='comment'># show results with the current used command line
+</span><span class='comment'># for global options
+</span><span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>args     </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_args'>args</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+<span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>options  </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_options'>options</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+<span class='comment'># for commands
+</span><span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>parsed command  </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_command'>command</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+<span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>command args    </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_command_args'>command_args</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
+<span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>command options </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_parser'>parser</span><span class='period'>.</span><span class='id identifier rubyid_command_options'>command_options</span><span class='period'>.</span><span class='id identifier rubyid_inspect'>inspect</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span></pre></div></div>
+
+    <div id="footer">
+  Generated on Sat Mar 19 21:25:25 2016 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.8.7.6 (ruby-2.2.4).
+</div>
+
+  </body>
+</html>
