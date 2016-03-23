@@ -1,5 +1,5 @@
 
-# miniparse [![GitHub issues](https://img.shields.io/github/issues/jmrod4/miniparse.svg)](https://github.com/jmrod4/miniparse/issues) [![GitHub tag](https://img.shields.io/github/tag/jmrod4/miniparse.svg)](https://github.com/jmrod4/miniparse) [![Gem version](https://img.shields.io/gem/v/miniparse.svg)](https://rubygems.org/gems/miniparse)
+# miniparse [![Gem version](https://img.shields.io/gem/v/miniparse.svg)](https://rubygems.org/gems/miniparse)
 
 **Miniparse is an easy to use yet flexible and powerful Ruby library for parsing command-line options.**
 
