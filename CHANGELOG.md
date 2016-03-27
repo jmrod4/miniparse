@@ -4,20 +4,29 @@ All MAJOR.MINOR changes to Miniparse will be documented in this file.
 This project uses an aproximation to [Semantic Versioning](http://semver.org/), 
 see [miniparse FAQ](https://github.com/jmrod4/miniparse/blob/master/FAQ.md) for details.
  
+## [v0.5.0.pre] - (testing)
+
+### Public interface of `miniparse/app`
+- added `App.logger`, `App.logger=`
+
+### New features of module App
+- `App.debug`, `App.info`, etc methods now do also logging if a logger is set
+- these methods now also when appropiate display/log the method/file they are in
+
 ## [v0.4.0] - 2016-03-23
 
 ### Public interface
 to gain in clarity
-- Parser#command_name replaces Parser#command
-- Parser#current_command_name replaces Parser#current_command
+- `Parser#command_name` replaces `Parser#command`
+- `Parser#current_command_name` replaces `Parser#current_command`
 
 new feature
-- added Parser#add_program_description(...)
+- added `Parser#add_program_description(...)`
 
 ### Improved
-- greatly improved source yard documentation (used by rubygems site) and used @private to guard the non-public interface
+- greatly improved source yard documentation (used by rubygems site) and used `@private` to guard the non-public interface
 - improved examples
-- modified app_simple example so that set_control is outside configure block and has a global effect
+- modified app_simple example so that `set_control` is outside configure block and has a global effect
 
 ### Fixed
 - added gemspec requeriment to Ruby 2.0 or later
